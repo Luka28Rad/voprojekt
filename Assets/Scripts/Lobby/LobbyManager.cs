@@ -5,6 +5,8 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using UnityEditor.ShaderGraph;
 
 // Nasljeđuje NetworkBehaviour, što je osnova za sve skripte koje trebaju mrežnu funkcionalnost u Netcode for GameObjects (NGO).
 // To nam daje pristup svojstvima poput IsHost, IsServer, IsClient i mrežnim metodama.
@@ -16,21 +18,25 @@ public class LobbyManager : NetworkBehaviour
 
     [Header("Screens")]
     [SerializeField] private GameObject mainMenuScreen;
-    [SerializeField] private GameObject joinGameScreen;
+    [SerializeField] private GameObject waitingRoomScreen;
     [SerializeField] private GameObject lobbyScreen;
+    [SerializeField] private GameObject roleShowcaseScreen;
 
     [Header("Main Menu Screen")]
     [SerializeField] private TMP_InputField nameInputField;
-    [SerializeField] private Button hostButton;
-    [SerializeField] private Button connectButton;
+    [SerializeField] private UnityEngine.UI.Button hostButton;
+    [SerializeField] private UnityEngine.UI.Button connectButton;
 
-    [Header("Join Game Screen")]
+    [Header("Waiting Room Screen")]
     [SerializeField] private TMP_InputField codeInputField;
-    [SerializeField] private Button joinButton;
+    [SerializeField] private TMP_Text numberOfConnectedPlayers;
+    [SerializeField] private UnityEngine.UI.Button joinButton;
+    [SerializeField] private UnityEngine.UI.Button startLobbyButton;
+    [SerializeField] private UnityEngine.UI.Button exitButton;
+    [SerializeField] private TMP_Text joinCodeText;
 
     [Header("Lobby Screen")]
-    [SerializeField] private Button startGameButton;
-    [SerializeField] private TMP_Text joinCodeText;
+    [SerializeField] private UnityEngine.UI.Button startGameButton;
     [SerializeField] private Transform playerCardsContainer;
     [SerializeField] private GameObject playerCardPrefab;
 
@@ -55,6 +61,8 @@ public class LobbyManager : NetworkBehaviour
         connectButton.onClick.AddListener(ShowJoinScreen);
         joinButton.onClick.AddListener(ConnectToLobby);
         startGameButton.onClick.AddListener(StartGame);
+        startLobbyButton.onClick.AddListener(StartLobby);
+        exitButton.onClick.AddListener(ExitLobby);
         
         nameInputField.onValueChanged.AddListener(OnNameChanged);
 
@@ -62,9 +70,18 @@ public class LobbyManager : NetworkBehaviour
         connectButton.interactable = false;
 
         mainMenuScreen.SetActive(true);
-        joinGameScreen.SetActive(false);
+        waitingRoomScreen.SetActive(false);
         lobbyScreen.SetActive(false);
         gameScreen.SetActive(false);
+    }
+    private void Update()
+    {
+        if (waitingRoomScreen.activeInHierarchy) {
+            if (IsHost)
+            {
+                numberOfConnectedPlayers.text = NetworkManager.Singleton.ConnectedClientsList.Count().ToString();
+            }
+        }
     }
 
     // OnNetworkSpawn se poziva kada je ovaj NetworkObject stvoren na mreži (i za hosta i za klijente).
@@ -128,15 +145,23 @@ public class LobbyManager : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
         
         mainMenuScreen.SetActive(false);
-        lobbyScreen.SetActive(true);
+        //lobbyScreen.SetActive(true);
+        waitingRoomScreen.SetActive(true);
         joinCodeText.text = $"IP: {GetLocalIPv4()}";
+        for (int i = 0; i < 4; i++){
+            waitingRoomScreen.transform.GetChild(i).gameObject.SetActive(true);
+        }
     }
 
     public void ShowJoinScreen()
     {
+        Debug.Log("Joined waiting room.");
         SavePlayerName();
         mainMenuScreen.SetActive(false);
-        joinGameScreen.SetActive(true);
+        for(int i = 4; i < 7; i++) {
+            waitingRoomScreen.transform.GetChild(i).gameObject.SetActive(true);
+        }
+        waitingRoomScreen.SetActive(true);
     }
 
     public void ShowGameScreen()
@@ -149,7 +174,8 @@ public class LobbyManager : NetworkBehaviour
     {
         string ipAddress = codeInputField.text;
         if (string.IsNullOrWhiteSpace(ipAddress)) return;
-
+        waitingRoomScreen.transform.GetChild(0).GetComponent<TMP_Text>().color = new Color(0,256,0);
+        
         // Klijent postavlja IP adresu na koju se želi spojiti. Port mora biti isti kao kod hosta.
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
             ipAddress,
@@ -179,8 +205,8 @@ public class LobbyManager : NetworkBehaviour
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             Debug.Log("Uspješno spojen na hosta.");
-            joinGameScreen.SetActive(false);
-            lobbyScreen.SetActive(true);
+            waitingRoomScreen.SetActive(false);
+            //lobbyScreen.SetActive(true);
             joinCodeText.text = "Spojen na Host";
         }
     }
@@ -236,5 +262,16 @@ public class LobbyManager : NetworkBehaviour
         return Dns.GetHostEntry(Dns.GetHostName())
             .AddressList.FirstOrDefault(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?
             .ToString() ?? "Not Found";
+    }
+    private void StartLobby() //starts the lobby room (no players can join after that point)
+    {
+        waitingRoomScreen.SetActive(false);
+        lobbyScreen.SetActive(true);
+    }
+    private void ExitLobby() //pressing the X returns you back to the main menu
+    {
+        waitingRoomScreen.SetActive(false);
+        //TODO: add logic to remove all dependant objects for a game session
+        mainMenuScreen.SetActive(true);
     }
 }
