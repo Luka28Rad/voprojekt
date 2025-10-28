@@ -81,16 +81,9 @@ public class GameManager : NetworkBehaviour
             };
 
             playerData.SetRoleClientRpc(role, clientRpcParams);
+            LobbyManager.Instance.RoleShowcaseParamsClientRpc(role, clientRpcParams);
         }
         
-        // Na svim klijentima zove da se pokaze game screen
-        StartGameClientRpc();
-    }
-
-    [ClientRpc]
-    private void StartGameClientRpc()
-    {
-        LobbyManager.Instance.ShowGameScreen();
     }
     
     private void Shuffle<T>(IList<T> list)

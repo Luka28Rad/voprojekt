@@ -7,20 +7,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEditor.ShaderGraph;
+using System.Collections.Generic;
 
 // Nasljeđuje NetworkBehaviour, što je osnova za sve skripte koje trebaju mrežnu funkcionalnost u Netcode for GameObjects (NGO).
 // To nam daje pristup svojstvima poput IsHost, IsServer, IsClient i mrežnim metodama.
 public class LobbyManager : NetworkBehaviour
 {
+    // lazy approach to roles descriptions
+    public Dictionary<PlayerRole, string> desc = new Dictionary<PlayerRole, string>();
+
     private static int MIN_PLAYER_TO_START_GAME = 2;
     public static LobbyManager Instance { get; private set; }
     public static string PlayerName { get; private set; }
+
+    [SerializeField] private GameTimeManager Timer;
 
     [Header("Screens")]
     [SerializeField] private GameObject mainMenuScreen;
     [SerializeField] private GameObject waitingRoomScreen;
     [SerializeField] private GameObject lobbyScreen;
     [SerializeField] private GameObject roleShowcaseScreen;
+    [SerializeField] private GameObject gameScreen;
 
     [Header("Main Menu Screen")]
     [SerializeField] private TMP_InputField nameInputField;
@@ -40,8 +47,12 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] private Transform playerCardsContainer;
     [SerializeField] private GameObject playerCardPrefab;
 
-    [Header("Game Screen")]
-    [SerializeField] private GameObject gameScreen;
+    [Header("Role Showcase Screen")]
+    [SerializeField] private TMP_Text roleText;
+    [SerializeField] private TMP_Text roleDescription;
+    //maybe add a direct reference to the sprite renderer as well
+
+    //[Header("Game Screen")]
 
     private void Awake()
     {
@@ -52,6 +63,11 @@ public class LobbyManager : NetworkBehaviour
         else
         {
             Instance = this;
+            desc.Add(PlayerRole.Unassigned, "???");
+            desc.Add(PlayerRole.Villager, "Your average 9-5 worker trying to do his best in life. Help find killers and vote them out.");
+            desc.Add(PlayerRole.Doctor, "Your part of the elite. Help the poor by shielding them for one night from any attackers. You can't shield a person consecutively.");
+            desc.Add(PlayerRole.Investigator, "You have a new case, Columbo. You have to interogate people to find out on which side they are on.");
+            desc.Add(PlayerRole.Impostor, "Its time to hunt! Kill all humans to get your sweet victory.");
         }
     }
 
@@ -62,7 +78,7 @@ public class LobbyManager : NetworkBehaviour
         joinButton.onClick.AddListener(ConnectToLobby);
         startGameButton.onClick.AddListener(StartGame);
         startLobbyButton.onClick.AddListener(StartLobby);
-        exitButton.onClick.AddListener(ExitLobby);
+        exitButton.onClick.AddListener(ExitWaitingRoom);
         
         nameInputField.onValueChanged.AddListener(OnNameChanged);
 
@@ -74,16 +90,54 @@ public class LobbyManager : NetworkBehaviour
         lobbyScreen.SetActive(false);
         gameScreen.SetActive(false);
     }
-    private void Update()
+    [ClientRpc] public void UIChangeClientRpc() // make all clients proceed to the correct UI
     {
-        if (waitingRoomScreen.activeInHierarchy) {
-            if (IsHost)
-            {
-                numberOfConnectedPlayers.text = NetworkManager.Singleton.ConnectedClientsList.Count().ToString();
-            }
+        if (waitingRoomScreen.activeInHierarchy)
+        {
+            Debug.Log("Clients: changing from waiting room to lobby");
+            waitingRoomScreen.SetActive(false);
+            lobbyScreen.SetActive(true);
+        }
+        else if (lobbyScreen.activeInHierarchy)
+        {
+            Debug.Log("Clients: changing from lobby to role showcase");
+            lobbyScreen.SetActive(false);
+            roleShowcaseScreen.SetActive(true);
+        }
+        else if (roleShowcaseScreen.activeInHierarchy)
+        {
+            Debug.Log("Clients: changing from role showcase to game screen(day)");
+            roleShowcaseScreen.SetActive(false);
+            gameScreen.SetActive(true);
         }
     }
+    private void Update()
+    {
+        if (waitingRoomScreen.activeInHierarchy && IsHost){
+            numberOfConnectedPlayers.text = NetworkManager.Singleton.ConnectedClientsList.Count().ToString();
+        }
+    }
+    // this method gets used to set role descriptions and the color of the role name [green = good, red = bad]
+    [ClientRpc] public void RoleShowcaseParamsClientRpc(PlayerRole roleName, ClientRpcParams clientRpcParams = default)
+    {
+        roleText.text = roleName.ToString();
+        if (roleName == PlayerRole.Impostor)
+            roleShowcaseScreen.transform.GetChild(1).GetComponent<TMP_Text>().color = new Color(200, 0, 0);
+        else
+            roleShowcaseScreen.transform.GetChild(1).GetComponent<TMP_Text>().color = new Color(0, 200, 0);
+        roleDescription.text = desc[roleName];
+    }
+    private void StartGame() // Lobby --> ShowCaseScreen
+    {
+        // IsHost je svojstvo iz NetworkBehaviour-a koje je istinito samo na računalu koje je pokrenulo igru kao host.
+        // Osiguravamo da samo host može započeti igru, što je standardna praksa za autoritativni model.
+        if (!IsHost) return;
+        GameManager.Instance.StartGameAndAssignRoles();
+        UIChangeClientRpc();
+        Timer.StartShowcaseTimer();
+    }
 
+    #region MainMenuLogic
     // OnNetworkSpawn se poziva kada je ovaj NetworkObject stvoren na mreži (i za hosta i za klijente).
     // Ovo je pravo mjesto za prijavu na mrežne događaje jer NetworkManager sigurno postoji u ovom trenutku.
     public override void OnNetworkSpawn()
@@ -115,23 +169,9 @@ public class LobbyManager : NetworkBehaviour
         connectButton.interactable = isNameValid;
     }
 
-    private void SavePlayerName()
-    {
-        PlayerName = nameInputField.text;
-    }
-
-    private void StartGame()
-    {
-        // IsHost je svojstvo iz NetworkBehaviour-a koje je istinito samo na računalu koje je pokrenulo igru kao host.
-        // Osiguravamo da samo host može započeti igru, što je standardna praksa za autoritativni model.
-        if (!IsHost) return;
-        
-        GameManager.Instance.StartGameAndAssignRoles();
-    }
-
     public void HostLobby()
     {
-        SavePlayerName();
+        PlayerName = nameInputField.text;
 
         // Postavljamo podatke za Unity Transport sloj. Ovdje definiramo IP adresu i port
         // na kojem će server "slušati" dolazeće konekcije. "0.0.0.0" znači "sve dostupne mreže".
@@ -143,48 +183,26 @@ public class LobbyManager : NetworkBehaviour
         // StartHost() pokreće i server i klijenta na istom računalu.
         // Osoba koja ovo pokrene je i server i igrač (client).
         NetworkManager.Singleton.StartHost();
-        
-        mainMenuScreen.SetActive(false);
-        //lobbyScreen.SetActive(true);
-        waitingRoomScreen.SetActive(true);
-        joinCodeText.text = $"IP: {GetLocalIPv4()}";
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++)
+        {
             waitingRoomScreen.transform.GetChild(i).gameObject.SetActive(true);
         }
+        joinCodeText.text = $"IP: {GetLocalIPv4()}";
+        StartWaitingRoom();
+
     }
 
     public void ShowJoinScreen()
     {
         Debug.Log("Joined waiting room.");
-        SavePlayerName();
-        mainMenuScreen.SetActive(false);
-        for(int i = 4; i < 7; i++) {
+        PlayerName = nameInputField.text;
+        for (int i = 4; i < 7; i++)
+        {
             waitingRoomScreen.transform.GetChild(i).gameObject.SetActive(true);
         }
-        waitingRoomScreen.SetActive(true);
+        StartWaitingRoom();
     }
-
-    public void ShowGameScreen()
-    {
-        lobbyScreen.SetActive(false);
-        gameScreen.SetActive(true);
-    }
-
-    public void ConnectToLobby()
-    {
-        string ipAddress = codeInputField.text;
-        if (string.IsNullOrWhiteSpace(ipAddress)) return;
-        waitingRoomScreen.transform.GetChild(0).GetComponent<TMP_Text>().color = new Color(0,256,0);
-        
-        // Klijent postavlja IP adresu na koju se želi spojiti. Port mora biti isti kao kod hosta.
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
-            ipAddress,
-            7777
-        );
-
-        // StartClient() pokušava se spojiti na server na prethodno postavljenoj IP adresi i portu.
-        NetworkManager.Singleton.StartClient();
-    }
+    #endregion
 
     // Ovo je callback funkcija koja se izvršava na SVIM spojenim klijentima (uključujući hosta)
     // svaki put kada se novi klijent uspješno spoji na server.
@@ -205,14 +223,15 @@ public class LobbyManager : NetworkBehaviour
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             Debug.Log("Uspješno spojen na hosta.");
-            waitingRoomScreen.SetActive(false);
+            //waitingRoomScreen.SetActive(false);
             //lobbyScreen.SetActive(true);
             joinCodeText.text = "Spojen na Host";
         }
     }
-
+    
     // Slično kao i HandleClientConnected, ova funkcija se poziva na svim preostalim
     // klijentima kada se neki klijent odspoji.
+
     private void HandleClientDisconnected(ulong clientId)
     {
         Debug.Log($"Klijent {clientId} se odspojio.");
@@ -221,8 +240,8 @@ public class LobbyManager : NetworkBehaviour
         {
             UpdateLobbyUI();
         }
-    }
 
+    }
     public void UpdateLobbyUI()
     {
         foreach (Transform child in playerCardsContainer)
@@ -263,15 +282,74 @@ public class LobbyManager : NetworkBehaviour
             .AddressList.FirstOrDefault(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?
             .ToString() ?? "Not Found";
     }
+    
+    #region WaitingRoomLogic
+    public void ConnectToLobby()
+    {
+        Debug.Log("Host starts waiting room for lobby");
+        string ipAddress = codeInputField.text;
+        if (string.IsNullOrWhiteSpace(ipAddress)) return;
+
+
+        // Klijent postavlja IP adresu na koju se želi spojiti. Port mora biti isti kao kod hosta.
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
+            ipAddress,
+            7777
+        );
+
+        // StartClient() pokušava se spojiti na server na prethodno postavljenoj IP adresi i portu.
+        NetworkManager.Singleton.StartClient();
+        waitingRoomScreen.transform.GetChild(4).GetComponent<TMP_Text>().color = new Color(0, 256, 0);
+        joinButton.interactable = false;
+
+    }
+    private void StartWaitingRoom() // call when switching from main menu to waiting room
+    {
+        mainMenuScreen.SetActive(false);
+        waitingRoomScreen.SetActive(true);
+    }
+    [ClientRpc]
+    private void ForceExitClientsClientRpc() // force clients to exit the server, kick them out of the waiting room
+    {
+        ExitWaitingRoom();
+    }
     private void StartLobby() //starts the lobby room (no players can join after that point)
     {
-        waitingRoomScreen.SetActive(false);
-        lobbyScreen.SetActive(true);
+        UIChangeClientRpc();
     }
-    private void ExitLobby() //pressing the X returns you back to the main menu
+    private void ExitWaitingRoom() //pressing the X returns you back to the main menu
     {
         waitingRoomScreen.SetActive(false);
-        //TODO: add logic to remove all dependant objects for a game session
         mainMenuScreen.SetActive(true);
+        ReturnToMainMenu();
     }
+    private void ReturnToMainMenu() // main function for handling exits from the waiting room 
+                                    // and disconnecting people from the hosts server
+    {
+        if (IsHost)
+        {
+            ForceExitClientsClientRpc();
+            Debug.Log("Host shutting down server.");
+            joinCodeText.text = "";
+            numberOfConnectedPlayers.text = "1";
+            for (int i = 0; i < 7; i++)
+            {
+                waitingRoomScreen.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            NetworkManager.Singleton.Shutdown();
+        }
+        else if (NetworkManager.Singleton.IsClient)
+        {
+            Debug.Log("Client disconnecting.");
+            codeInputField.text = "";
+            waitingRoomScreen.transform.GetChild(4).GetComponent<TMP_Text>().color = new Color(256, 0, 0);
+            for (int i = 4; i < 7; i++)
+            {
+                waitingRoomScreen.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            joinButton.interactable = true;
+            NetworkManager.Singleton.Shutdown();
+        }
+    }
+    #endregion
 }
