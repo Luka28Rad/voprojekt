@@ -28,6 +28,7 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] private GameObject lobbyScreen;
     [SerializeField] private GameObject roleShowcaseScreen;
     [SerializeField] private GameObject gameScreen;
+    [SerializeField] private GameObject gameOverScreen;
 
     [Header("Main Menu Screen")]
     [SerializeField] private TMP_InputField nameInputField;
@@ -52,7 +53,10 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] private TMP_Text roleDescription;
     //maybe add a direct reference to the sprite renderer as well
 
-    //[Header("Game Screen")]
+    [Header("Game Over Screen")]
+    [SerializeField] private TMP_Text gameOverText;
+    [SerializeField] private UnityEngine.UI.Button exitToMainMenuButton;
+    [SerializeField] private TMP_Text nextMatchTimer;
 
     private void Awake()
     {
@@ -78,7 +82,8 @@ public class LobbyManager : NetworkBehaviour
         joinButton.onClick.AddListener(ConnectToLobby);
         startGameButton.onClick.AddListener(StartGame);
         startLobbyButton.onClick.AddListener(StartLobby);
-        exitButton.onClick.AddListener(ExitWaitingRoom);
+        exitButton.onClick.AddListener(ExitToMainMenu);
+        exitToMainMenuButton.onClick.AddListener(ExitToMainMenu);
         
         nameInputField.onValueChanged.AddListener(OnNameChanged);
 
@@ -110,11 +115,32 @@ public class LobbyManager : NetworkBehaviour
             roleShowcaseScreen.SetActive(false);
             gameScreen.SetActive(true);
         }
+        else if (gameScreen.activeInHierarchy)
+        {
+            Debug.Log("Clients: changing from game screen to game over screen");
+            gameScreen.SetActive(false);
+            gameOverScreen.SetActive(true);
+            if (IsHost)
+            {
+                Timer.StartWaitingRoomTimer();
+            }
+        }
+        else if (gameOverScreen.activeInHierarchy)
+        {
+            Debug.Log("Clients: changing from game over screen back to waiting room");
+            gameOverScreen.SetActive(false);
+            waitingRoomScreen.SetActive(true);
+        }
     }
     private void Update()
     {
         if (waitingRoomScreen.activeInHierarchy && IsHost){
             numberOfConnectedPlayers.text = NetworkManager.Singleton.ConnectedClientsList.Count().ToString();
+        }
+        if (gameOverScreen.activeInHierarchy)
+        {
+            float timeLeft = Timer.GameOverTime.Value;
+            nextMatchTimer.text = Mathf.CeilToInt(timeLeft).ToString();
         }
     }
     // this method gets used to set role descriptions and the color of the role name [green = good, red = bad]
@@ -311,16 +337,24 @@ public class LobbyManager : NetworkBehaviour
     [ClientRpc]
     private void ForceExitClientsClientRpc() // force clients to exit the server, kick them out of the waiting room
     {
-        ExitWaitingRoom();
+        ExitToMainMenu();
     }
     private void StartLobby() //starts the lobby room (no players can join after that point)
     {
         UIChangeClientRpc();
     }
-    private void ExitWaitingRoom() //pressing the X returns you back to the main menu
+    private void ExitToMainMenu() //pressing the X returns you back to the main menu
     {
-        waitingRoomScreen.SetActive(false);
-        mainMenuScreen.SetActive(true);
+        if (waitingRoomScreen.activeInHierarchy)
+        {
+            waitingRoomScreen.SetActive(false);
+            mainMenuScreen.SetActive(true);
+        }
+        else if (gameOverScreen.activeInHierarchy)
+        {
+            gameOverScreen.SetActive(false);
+            mainMenuScreen.SetActive(true);
+        }
         ReturnToMainMenu();
     }
     private void ReturnToMainMenu() // main function for handling exits from the waiting room 

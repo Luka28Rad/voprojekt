@@ -4,6 +4,152 @@ using UnityEngine;
 
 public class GameUI : MonoBehaviour
 {
+    private static bool dayTimeTimerActive = false;
+    private static bool nightTimeTimerActive = false;
+    public static GameUI Instance { get; private set; }
+
+    [SerializeField] private GameTimeManager gameTimeManager;
+    [SerializeField] private LobbyManager lobby;
+    [SerializeField] private TMP_Text timer;
+
+    [Header("Day Time Screen")]
+    [SerializeField] private GameObject dayTimeScreen;
+    [SerializeField] private UnityEngine.UI.Button votingMenuButton;
+
+    [Header("Night Time Screen")]
+    [SerializeField] private GameObject nightTimeScreen;
+    // add ability UI here
+
+    [Header("Voting Screen")]
+    [SerializeField] private GameObject votingScreen;
+    [SerializeField] private UnityEngine.UI.Button voteButton;
+    [SerializeField] private UnityEngine.UI.Button skipButton;
+    [SerializeField] private UnityEngine.UI.Button exitButton;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if(Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void Start()
+    {
+        votingMenuButton.onClick.AddListener(OpenVotingMenu);
+        voteButton.onClick.AddListener(ClientVote);
+        skipButton.onClick.AddListener(ClientSkipVote);
+        exitButton.onClick.AddListener(CloseVotingMenu);
+    }
+    private void Update()
+    {
+        if (dayTimeScreen.activeInHierarchy && dayTimeTimerActive)
+        {
+            float timeLeft = gameTimeManager.DayTime.Value;
+            timer.text = Mathf.CeilToInt(timeLeft).ToString();
+        }
+        else if (nightTimeScreen.activeInHierarchy && nightTimeTimerActive)
+        {
+            float timeLeft = gameTimeManager.NightTime.Value;
+            timer.text = Mathf.CeilToInt(timeLeft).ToString();
+        }
+    }
+    private void OnEnable()
+    {
+        Debug.Log("IM GETTING CALLED WHEN ACTIVATING");
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+        {
+            gameTimeManager.StartDayTimeTimer();
+        } 
+    }
+    public void EnableDayTimer()
+    {
+        dayTimeTimerActive = true;
+    }
+    public void DisableDayTimer()
+    {
+        dayTimeTimerActive = false;
+    }
+    public void EnableNightTimer()
+    {
+        nightTimeTimerActive = true;
+    }
+    public void DisableNightTimer()
+    {
+        nightTimeTimerActive = false;
+    }
+    public void UIChange() // make all clients proceed to the correct UI
+    {
+        if (dayTimeScreen.activeInHierarchy)
+        {
+            dayTimeScreen.SetActive(false);
+            if (votingScreen.activeInHierarchy)
+            {
+                votingScreen.SetActive(false);
+                RectTransform rect = timer.GetComponent<RectTransform>();
+                Vector2 pos = new Vector2(150f,-100f); //hardcoded = bad
+                rect.anchoredPosition = pos;
+            }
+            nightTimeScreen.SetActive(true);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                gameTimeManager.StartNightTimeTimer();
+        }
+        else if (nightTimeScreen.activeInHierarchy)
+        {
+            // 2 cases: game continues = cycle to day, game ends = cycle to game over screen
+            if (true)
+            {
+                //end the game
+                nightTimeScreen.SetActive(false);
+                if(NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                    lobby.UIChangeClientRpc();
+            }
+            else
+            {
+                // continue the game
+                nightTimeScreen.SetActive(false);
+                dayTimeScreen.SetActive(true);
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                    gameTimeManager.StartDayTimeTimer();
+            }
+        }
+    }
+
+    public void OpenVotingMenu()
+    {
+        RectTransform rect = timer.GetComponent<RectTransform>();
+        Vector2 pos = rect.anchoredPosition;
+        pos.y *= -1;
+        rect.anchoredPosition = pos; 
+        votingScreen.SetActive(true);
+        votingMenuButton.interactable = false;
+    }
+    public void CloseVotingMenu()
+    {
+        RectTransform rect = timer.GetComponent<RectTransform>();
+        Vector2 pos = rect.anchoredPosition;
+        pos.y *= -1;
+        rect.anchoredPosition = pos;
+        votingScreen.SetActive(false);
+        votingMenuButton.interactable = true;
+    }
+    public void ClientVote()
+    {
+
+    }
+    public void ClientSkipVote()
+    {
+
+    }
+}
+
+
+
+
+#region Previous code
+/*
     [SerializeField] private TMP_Text roleDisplayText;
 
     private void OnEnable()
@@ -54,4 +200,5 @@ public class GameUI : MonoBehaviour
     {
         roleDisplayText.text = $"Your Role: {role}";
     }
-}
+    */
+#endregion

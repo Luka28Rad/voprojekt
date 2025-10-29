@@ -7,6 +7,7 @@ public class PlayerNetworkData : NetworkBehaviour
 {
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
     public PlayerRole MyRole { get; private set; } = PlayerRole.Unassigned;
+    public bool PlayerIsAlive { get; private set; } = true;
     public event Action<PlayerRole> OnRoleAssigned;
 
     public override void OnNetworkSpawn()
