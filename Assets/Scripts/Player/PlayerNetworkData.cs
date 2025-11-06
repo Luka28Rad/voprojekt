@@ -1,11 +1,17 @@
 using System;
 using Unity.Collections;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerNetworkData : NetworkBehaviour
 {
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
+    public NetworkVariable<int> hairIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> headIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> faceIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> bodyIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> legsIndex = new NetworkVariable<int>();
     public PlayerRole MyRole { get; private set; } = PlayerRole.Unassigned;
     public bool PlayerIsAlive { get; private set; } = true;
     public event Action<PlayerRole> OnRoleAssigned;
@@ -31,7 +37,17 @@ public class PlayerNetworkData : NetworkBehaviour
     {
         PlayerName.Value = name;
     }
-    
+
+    //Postavljanje indeksa u PlayerNetworkData kako bi skripta PlayerUIManager mogla uzeti te indekse
+    [ServerRpc]
+    public void SetAppearanceServerRpc(int hair, int head, int face, int body, int legs){
+        hairIndex.Value = hair;
+        headIndex.Value = head;
+        faceIndex.Value = face;
+        bodyIndex.Value = body;
+        legsIndex.Value = legs;
+    }
+
     private void OnNameChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
     {
         if (LobbyManager.Instance != null)

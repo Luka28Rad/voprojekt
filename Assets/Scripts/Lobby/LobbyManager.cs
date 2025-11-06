@@ -102,6 +102,7 @@ public class LobbyManager : NetworkBehaviour
             Debug.Log("Clients: changing from waiting room to lobby");
             waitingRoomScreen.SetActive(false);
             lobbyScreen.SetActive(true);
+            playerCardsContainer.gameObject.SetActive(true); //Make player cards appear
         }
         else if (lobbyScreen.activeInHierarchy)
         {
@@ -279,11 +280,16 @@ public class LobbyManager : NetworkBehaviour
         // koju održava NetworkManager na serveru.
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            GameObject card = Instantiate(playerCardPrefab, playerCardsContainer);
-            
+
             // Svaki klijent na mreži ima svoj PlayerObject, koji je NetworkObject koji ga predstavlja u igri.
+            GameObject card = Instantiate(playerCardPrefab, playerCardsContainer);
             var playerNetworkData = client.PlayerObject.GetComponent<PlayerNetworkData>();
-            
+
+            // Poveži svaku istancu kartice sa odgovarajucim klijentom
+            var editLook = card.GetComponent<EditPlayerLook>();
+            editLook.networkData = playerNetworkData;
+            editLook.LinkClientId(client.ClientId);
+
             // Pristupamo NetworkVariable<T> varijabli. ".Value" se koristi za čitanje sinkronizirane vrijednosti.
             // U ovom slučaju, čitamo ime igrača koje je sinkronizirano preko mreže.
             card.GetComponent<PlayerCard>().SetPlayerName(playerNetworkData.PlayerName.Value.ToString());
@@ -300,7 +306,7 @@ public class LobbyManager : NetworkBehaviour
             startGameButton.gameObject.SetActive(false);
         }
     }
-    
+
     // Ovo getta ip za join
     private string GetLocalIPv4()
     {
