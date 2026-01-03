@@ -4,7 +4,8 @@ using UnityEngine;
 public class PlayerUIManager : MonoBehaviour
 {
     [Header("Player Cards Container")]
-    [SerializeField] private Transform playerCardsContainer;
+    [SerializeField] Transform playerCardsContainer;
+
 
     //To be fair ovo vjv nije best way jer se update poziva svaki frame
     private void Update()
@@ -38,5 +39,15 @@ public class PlayerUIManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public Transform GetContainer()
+    {
+        return playerCardsContainer;
+    }
+
+    public void CreatePlayerUI()
+    {
+
     }
 }

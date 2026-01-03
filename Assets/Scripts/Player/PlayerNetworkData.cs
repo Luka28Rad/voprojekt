@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerNetworkData : NetworkBehaviour
 {
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
+    public NetworkVariable<int> TrainCart = new NetworkVariable<int>(0); // 0 = no assigned cart
     public NetworkVariable<int> hairIndex = new NetworkVariable<int>();
     public NetworkVariable<int> headIndex = new NetworkVariable<int>();
     public NetworkVariable<int> faceIndex = new NetworkVariable<int>();
@@ -46,6 +47,11 @@ public class PlayerNetworkData : NetworkBehaviour
         faceIndex.Value = face;
         bodyIndex.Value = body;
         legsIndex.Value = legs;
+    }
+    [ServerRpc]
+    public void SetLocationServerRpc(int cart)
+    {
+        TrainCart.Value = cart;
     }
 
     private void OnNameChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)

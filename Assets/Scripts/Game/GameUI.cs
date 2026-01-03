@@ -13,15 +13,15 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TMP_Text timer;
 
     [Header("Day Time Screen")]
-    [SerializeField] private GameObject dayTimeScreen;
+    [SerializeField] public GameObject dayTimeScreen;
     [SerializeField] private UnityEngine.UI.Button votingMenuButton;
 
     [Header("Night Time Screen")]
-    [SerializeField] private GameObject nightTimeScreen;
+    [SerializeField] public GameObject nightTimeScreen;
     // add ability UI here
 
     [Header("Voting Screen")]
-    [SerializeField] private GameObject votingScreen;
+    [SerializeField] public GameObject votingScreen;
     [SerializeField] private UnityEngine.UI.Button voteButton;
     [SerializeField] private UnityEngine.UI.Button skipButton;
     [SerializeField] private UnityEngine.UI.Button exitButton;
@@ -66,6 +66,7 @@ public class GameUI : MonoBehaviour
     }
     public void EnableDayTimer()
     {
+        dayTimeScreen.SetActive(true);
         dayTimeTimerActive = true;
     }
     public void DisableDayTimer()
@@ -74,6 +75,7 @@ public class GameUI : MonoBehaviour
     }
     public void EnableNightTimer()
     {
+        nightTimeScreen.SetActive(true);
         nightTimeTimerActive = true;
     }
     public void DisableNightTimer()
@@ -98,6 +100,7 @@ public class GameUI : MonoBehaviour
         }
         else if (nightTimeScreen.activeInHierarchy)
         {
+            lobby.ResetLocationClientRpc();
             // 2 cases: game continues = cycle to day, game ends = cycle to game over screen
             if (true)
             {

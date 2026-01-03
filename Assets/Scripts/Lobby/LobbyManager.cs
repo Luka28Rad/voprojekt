@@ -20,7 +20,12 @@ public class LobbyManager : NetworkBehaviour
     public static LobbyManager Instance { get; private set; }
     public static string PlayerName { get; private set; }
 
+    private Transform playerCardsContainer;
+    private GameObject playerModel;
+
     [SerializeField] private GameTimeManager Timer;
+    [SerializeField] private PlayerUIManager PlayerUI;
+    [SerializeField] private GameUI GameUI;
 
     [Header("Screens")]
     [SerializeField] private GameObject mainMenuScreen;
@@ -45,13 +50,18 @@ public class LobbyManager : NetworkBehaviour
 
     [Header("Lobby Screen")]
     [SerializeField] private UnityEngine.UI.Button startGameButton;
-    [SerializeField] private Transform playerCardsContainer;
     [SerializeField] private GameObject playerCardPrefab;
+    
 
     [Header("Role Showcase Screen")]
     [SerializeField] private TMP_Text roleText;
     [SerializeField] private TMP_Text roleDescription;
     //maybe add a direct reference to the sprite renderer as well
+
+    [Header("Game Screen")]
+    [SerializeField] private GameObject playerContainer;
+    [SerializeField] private Transform cart1;
+    [SerializeField] private Transform cart2;
 
     [Header("Game Over Screen")]
     [SerializeField] private TMP_Text gameOverText;
@@ -94,7 +104,10 @@ public class LobbyManager : NetworkBehaviour
         waitingRoomScreen.SetActive(false);
         lobbyScreen.SetActive(false);
         gameScreen.SetActive(false);
+
+        playerCardsContainer = PlayerUI.GetContainer();
     }
+    
     [ClientRpc] public void UIChangeClientRpc() // make all clients proceed to the correct UI
     {
         if (waitingRoomScreen.activeInHierarchy)
@@ -108,12 +121,32 @@ public class LobbyManager : NetworkBehaviour
         {
             Debug.Log("Clients: changing from lobby to role showcase");
             lobbyScreen.SetActive(false);
+            playerModel.GetComponent<EditPlayerLook>().DisableButtons();
+            playerCardsContainer.gameObject.SetActive(false);
             roleShowcaseScreen.SetActive(true);
         }
         else if (roleShowcaseScreen.activeInHierarchy)
         {
             Debug.Log("Clients: changing from role showcase to game screen(day)");
             roleShowcaseScreen.SetActive(false);
+            //move the cards container for each player down
+            var rt = playerCardsContainer.GetComponent<RectTransform>();
+            rt.SetParent(gameScreen.transform, false);
+            rt.SetSiblingIndex(1);
+            rt.anchoredPosition = new Vector2(5f, -65f);
+            playerCardsContainer.SetSiblingIndex(1);
+            var grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
+            //grid.cellSize = new Vector2(140, 180);
+            //grid.spacing = new Vector2(15, 15);
+            playerModel.transform.SetParent(playerContainer.transform, false);
+            /*
+             * foreach (Transform child in playerCardsContainer)
+               {
+                 //child.GetComponent<RectTransform>().localScale = Vector3.one;
+                 //child.GetComponent<RectTransform>().sizeDelta *= 0.5f;
+               }
+            */
+            playerCardsContainer.gameObject.SetActive(true);
             gameScreen.SetActive(true);
         }
         else if (gameScreen.activeInHierarchy)
@@ -124,6 +157,9 @@ public class LobbyManager : NetworkBehaviour
             if (IsHost)
             {
                 Timer.StartWaitingRoomTimer();
+                Timer.ShowcaseTime.Value = 0;
+                Timer.DayTime.Value = 0;
+                Timer.NightTime.Value = 0;
             }
         }
         else if (gameOverScreen.activeInHierarchy)
@@ -143,6 +179,29 @@ public class LobbyManager : NetworkBehaviour
             float timeLeft = Timer.GameOverTime.Value;
             nextMatchTimer.text = Mathf.CeilToInt(timeLeft).ToString();
         }
+        if (gameScreen.activeInHierarchy && GameUI.dayTimeScreen.activeInHierarchy)
+        {
+            foreach (Transform child in playerCardsContainer)
+            {
+                var edit = child.gameObject.GetComponent<EditPlayerLook>();
+                int cart = edit.networkData.TrainCart.Value;
+                if (cart != 0)
+                {
+                    if (cart == 1)
+                    {
+                        child.SetParent(cart1, false);
+                    }
+                    else if(cart == 2)
+                    {
+                        child.SetParent(cart2, false);
+                    }
+                }
+                else if(cart==0 && edit.linkedClientId != NetworkManager.Singleton.LocalClientId)
+                {
+                    child.SetParent(playerCardsContainer, false);
+                }
+            }
+        }
     }
     // this method gets used to set role descriptions and the color of the role name [green = good, red = bad]
     [ClientRpc] public void RoleShowcaseParamsClientRpc(PlayerRole roleName, ClientRpcParams clientRpcParams = default)
@@ -153,6 +212,20 @@ public class LobbyManager : NetworkBehaviour
         else
             roleShowcaseScreen.transform.GetChild(1).GetComponent<TMP_Text>().color = new Color(0, 200, 0);
         roleDescription.text = desc[roleName];
+    }
+    [ClientRpc] public void ResetLocationClientRpc()
+    {
+        foreach (Transform child in cart1)
+        {
+            child.SetParent(playerCardsContainer, false);
+        }
+        foreach (Transform child in cart2)
+        {
+            child.SetParent(playerCardsContainer, false);
+        }
+        playerModel.transform.SetParent(playerContainer.transform, false);
+        var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
+        data.SetLocationServerRpc(0);
     }
     private void StartGame() // Lobby --> ShowCaseScreen
     {
@@ -250,8 +323,6 @@ public class LobbyManager : NetworkBehaviour
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             Debug.Log("Uspješno spojen na hosta.");
-            //waitingRoomScreen.SetActive(false);
-            //lobbyScreen.SetActive(true);
             joinCodeText.text = "Spojen na Host";
         }
     }
@@ -285,6 +356,13 @@ public class LobbyManager : NetworkBehaviour
             GameObject card = Instantiate(playerCardPrefab, playerCardsContainer);
             var playerNetworkData = client.PlayerObject.GetComponent<PlayerNetworkData>();
 
+            //spremimo referencu player modela koji trenutni igrač koristi
+            if (client.ClientId == NetworkManager.LocalClientId)
+            {
+                playerModel = card;
+            }
+                
+            
             // Poveži svaku istancu kartice sa odgovarajucim klijentom
             var editLook = card.GetComponent<EditPlayerLook>();
             editLook.networkData = playerNetworkData;

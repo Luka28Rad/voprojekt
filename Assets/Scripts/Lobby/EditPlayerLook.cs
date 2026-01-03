@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EditPlayerLook : NetworkBehaviour
+public class EditPlayerLook : MonoBehaviour
 {
     [Header("Edit UI")]
     [SerializeField] private GameObject editUI;
@@ -38,7 +38,10 @@ public class EditPlayerLook : NetworkBehaviour
         bodyIndex = networkData.bodyIndex.Value;
         legsIndex = networkData.legsIndex.Value;
     }
-
+    public ulong getId()
+    {
+        return linkedClientId;
+    }
     //Funkcija za povezivanje kartice sa igraèem
     public void LinkClientId(ulong clientId)
     {
@@ -67,6 +70,14 @@ public class EditPlayerLook : NetworkBehaviour
         editUI.SetActive(false);
         doneButton.gameObject.SetActive(false);
         editButton.gameObject.SetActive(true);
+    }
+
+    //Helper funkcije za paliti/gasiti edit button za in game koristenje
+    public void DisableButtons()
+    {
+        editButton.gameObject.SetActive(false);
+        doneButton.gameObject.SetActive(false);
+        editUI.SetActive(false);
     }
 
     //Izbori za izgleda lijevo/desno za kosu,lice,...
