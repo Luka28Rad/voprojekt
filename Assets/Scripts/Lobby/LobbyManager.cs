@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEditor.ShaderGraph;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 // Nasljeđuje NetworkBehaviour, što je osnova za sve skripte koje trebaju mrežnu funkcionalnost u Netcode for GameObjects (NGO).
 // To nam daje pristup svojstvima poput IsHost, IsServer, IsClient i mrežnim metodama.
@@ -131,21 +132,15 @@ public class LobbyManager : NetworkBehaviour
             roleShowcaseScreen.SetActive(false);
             //move the cards container for each player down
             var rt = playerCardsContainer.GetComponent<RectTransform>();
-            rt.SetParent(gameScreen.transform, false);
-            rt.SetSiblingIndex(1);
+            rt.SetParent(GameUI.dayTimeScreen.transform, false);
+            rt.SetSiblingIndex(3);
             rt.anchoredPosition = new Vector2(5f, -65f);
             playerCardsContainer.SetSiblingIndex(1);
             var grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
             //grid.cellSize = new Vector2(140, 180);
             //grid.spacing = new Vector2(15, 15);
+            playerContainer.transform.SetParent(playerCardsContainer.transform, false);
             playerModel.transform.SetParent(playerContainer.transform, false);
-            /*
-             * foreach (Transform child in playerCardsContainer)
-               {
-                 //child.GetComponent<RectTransform>().localScale = Vector3.one;
-                 //child.GetComponent<RectTransform>().sizeDelta *= 0.5f;
-               }
-            */
             playerCardsContainer.gameObject.SetActive(true);
             gameScreen.SetActive(true);
         }
@@ -181,10 +176,15 @@ public class LobbyManager : NetworkBehaviour
         }
         if (gameScreen.activeInHierarchy && GameUI.dayTimeScreen.activeInHierarchy)
         {
-            foreach (Transform child in playerCardsContainer)
+            List<Transform> _allCards = new();
+            foreach (Transform t in playerCardsContainer) _allCards.Add(t);
+            foreach (Transform t in cart1) _allCards.Add(t);
+            foreach (Transform t in cart2) _allCards.Add(t);
+            foreach (Transform child in _allCards)
             {
                 var edit = child.gameObject.GetComponent<EditPlayerLook>();
                 int cart = edit.networkData.TrainCart.Value;
+                Debug.Log("child is in cart " + cart.ToString());
                 if (cart != 0)
                 {
                     if (cart == 1)
@@ -215,17 +215,26 @@ public class LobbyManager : NetworkBehaviour
     }
     [ClientRpc] public void ResetLocationClientRpc()
     {
-        foreach (Transform child in cart1)
+        for (int i = cart1.childCount - 1; i >= 0; i--)
         {
-            child.SetParent(playerCardsContainer, false);
+            cart1.GetChild(i).SetParent(playerCardsContainer.transform, false);
         }
-        foreach (Transform child in cart2)
+        for (int i = cart2.childCount - 1; i >= 0; i--)
         {
-            child.SetParent(playerCardsContainer, false);
+            cart2.GetChild(i).SetParent(playerCardsContainer.transform, false);
         }
-        playerModel.transform.SetParent(playerContainer.transform, false);
+        if (playerModel != null) playerModel.transform.SetParent(playerContainer.transform, false);
         var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
         data.SetLocationServerRpc(0);
+    }
+    public void ChangeLocation(int cart)
+    {
+        if (cart == 1)
+            playerModel.transform.SetParent(cart1, false);
+        else if (cart == 2)
+            playerModel.transform.SetParent(cart2, false);
+        var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
+        data.SetLocationServerRpc(cart);
     }
     private void StartGame() // Lobby --> ShowCaseScreen
     {

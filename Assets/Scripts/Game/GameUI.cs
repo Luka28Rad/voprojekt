@@ -100,9 +100,9 @@ public class GameUI : MonoBehaviour
         }
         else if (nightTimeScreen.activeInHierarchy)
         {
-            lobby.ResetLocationClientRpc();
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer) lobby.ResetLocationClientRpc();
             // 2 cases: game continues = cycle to day, game ends = cycle to game over screen
-            if (true)
+            if (false)
             {
                 //end the game
                 nightTimeScreen.SetActive(false);

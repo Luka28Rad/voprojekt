@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 public class CartSlot : MonoBehaviour, IDropHandler
 {
+    [SerializeField] private LobbyManager lobby;
     private int cartNumber = 0;
     private void Awake()
     {
@@ -17,9 +18,13 @@ public class CartSlot : MonoBehaviour, IDropHandler
         Debug.Log("Dropped in cart: "+cartNumber.ToString());
         if (eventData.pointerDrag != null)
         {
-            eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
+            var dragged = eventData.pointerDrag.transform as RectTransform;
+            dragged.anchoredPosition = Vector2.zero;
+            if (cartNumber == 1)
+                lobby.ChangeLocation(1);
+            else if (cartNumber == 2)
+                lobby.ChangeLocation(2);
         }
-
     }
 }
     
