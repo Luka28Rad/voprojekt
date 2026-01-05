@@ -22,6 +22,7 @@ public class GameUI : MonoBehaviour
 
     [Header("Voting Screen")]
     [SerializeField] public GameObject votingScreen;
+    [SerializeField] public VoteingUI voteUI;
     [SerializeField] private UnityEngine.UI.Button voteButton;
     [SerializeField] private UnityEngine.UI.Button skipButton;
     [SerializeField] private UnityEngine.UI.Button exitButton;
@@ -92,8 +93,11 @@ public class GameUI : MonoBehaviour
                 votingScreen.SetActive(false);
                 RectTransform rect = timer.GetComponent<RectTransform>();
                 Vector2 pos = new Vector2(150f,-100f); //hardcoded = bad
+                votingMenuButton.interactable = true;
+                voteUI.CloseVotingPanel();
                 rect.anchoredPosition = pos;
             }
+            voteUI.ResolveVotes();
             nightTimeScreen.SetActive(true);
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 gameTimeManager.StartNightTimeTimer();
@@ -127,6 +131,7 @@ public class GameUI : MonoBehaviour
         pos.y *= -1;
         rect.anchoredPosition = pos; 
         votingScreen.SetActive(true);
+        voteUI.OpenVotingPanel();
         votingMenuButton.interactable = false;
     }
     public void CloseVotingMenu()
@@ -136,6 +141,7 @@ public class GameUI : MonoBehaviour
         pos.y *= -1;
         rect.anchoredPosition = pos;
         votingScreen.SetActive(false);
+        voteUI.CloseVotingPanel();
         votingMenuButton.interactable = true;
     }
     public void ClientVote()

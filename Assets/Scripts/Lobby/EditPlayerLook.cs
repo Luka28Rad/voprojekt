@@ -10,33 +10,36 @@ public class EditPlayerLook : MonoBehaviour
     [SerializeField] private Button doneButton;
 
     [Header("Appearance elements")]
-    [SerializeField] public Image hairRenderer;
-    [SerializeField] public Image headRenderer;
-    [SerializeField] public Image faceRenderer;
-    [SerializeField] public Image bodyRenderer;
-    [SerializeField] public Image legsRenderer;
+    [SerializeField] public Image hairBackRenderer;
+    [SerializeField] public Image eyebrowsRenderer;
+    [SerializeField] public Image hairFrontRenderer;
+    [SerializeField] public Image eyesRenderer;
+    [SerializeField] public Image skinRenderer;
+    [SerializeField] public Image outfitRenderer;
 
     [Header("Appearance elements selection")]
-    [SerializeField] public Sprite[] hairSelect;
-    [SerializeField] public Sprite[] headSelect;
-    [SerializeField] public Sprite[] faceSelect;
-    [SerializeField] public Sprite[] bodySelect;
-    [SerializeField] public Sprite[] legsSelect;
+    [SerializeField] public Sprite[] hairBackSelect;
+    [SerializeField] public Sprite[] eyebrowsSelect;
+    [SerializeField] public Sprite[] hairFrontSelect;
+    [SerializeField] public Sprite[] eyesSelect;
+    [SerializeField] public Sprite[] skinSelect;
+    [SerializeField] public Sprite[] outfitSelect;
 
     [SerializeField] public PlayerNetworkData networkData;
 
     public ulong linkedClientId; //Koji je id klijenta kojem pripada kartica
-    private int hairIndex, headIndex, faceIndex, bodyIndex, legsIndex; //Indeksi za koristenje pri mjenjaju unutar funkcij
+    private int hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex; //Indeksi za koristenje pri mjenjaju unutar funkcij
     private bool canEdit = false;
 
     public void Start(){
         //Indeksi za koristenje pri mjenjaju unutar funkcije, uzima se pocetna vrijednost koja ce vjv biti 0 uvijek
         //Moze se kasnije napraviti da bude random ili neki preseti
-        hairIndex = networkData.hairIndex.Value;
-        headIndex = networkData.headIndex.Value;
-        faceIndex = networkData.faceIndex.Value;
-        bodyIndex = networkData.bodyIndex.Value;
-        legsIndex = networkData.legsIndex.Value;
+        hairBackIndex = networkData.hairBackIndex.Value;
+        eyebrowsIndex = networkData.eyebrowsIndex.Value;
+        hairFrontIndex = networkData.hairFrontIndex.Value;
+        eyesIndex = networkData.eyesIndex.Value;
+        skinIndex = networkData.skinIndex.Value;
+        outfitIndex = networkData.outfitIndex.Value;
     }
     public ulong getId()
     {
@@ -82,63 +85,55 @@ public class EditPlayerLook : MonoBehaviour
 
     //Izbori za izgleda lijevo/desno za kosu,lice,...
     public void HairLeft(){
-        ChangeIndex(ref hairIndex, hairSelect, -1);
+        ChangeIndex(ref hairBackIndex, hairBackSelect, -1);
+        ChangeIndex(ref eyebrowsIndex, eyebrowsSelect, -1);
+        ChangeIndex(ref hairFrontIndex, hairFrontSelect, -1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
     public void HairRight(){
-        ChangeIndex(ref hairIndex, hairSelect, +1);
+        ChangeIndex(ref hairBackIndex, hairBackSelect, +1);
+        ChangeIndex(ref eyebrowsIndex, eyebrowsSelect, +1);
+        ChangeIndex(ref hairFrontIndex, hairFrontSelect, +1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
-    public void HeadLeft(){
-        ChangeIndex(ref headIndex, headSelect, -1);
+    public void EyesLeft(){
+        ChangeIndex(ref eyesIndex, eyesSelect, -1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
-    public void HeadRight() {
-        ChangeIndex(ref headIndex, headSelect, +1);
+    public void EyesRight() {
+        ChangeIndex(ref eyesIndex, eyesSelect, +1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
-    public void FaceLeft() {
-        ChangeIndex(ref faceIndex, faceSelect, -1);
+    public void SkinLeft() {
+        ChangeIndex(ref skinIndex, skinSelect, -1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
-    public void FaceRight() {
-        ChangeIndex(ref faceIndex, faceSelect, +1);
+    public void SkinRight() {
+        ChangeIndex(ref skinIndex, skinSelect, +1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
-    public void BodyLeft() {
-        ChangeIndex(ref bodyIndex, bodySelect, -1);
+    public void OutfitLeft() {
+        ChangeIndex(ref outfitIndex, outfitSelect, -1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
-    public void BodyRight() {
-        ChangeIndex(ref bodyIndex, bodySelect, +1);
+    public void OutfitRight() {
+        ChangeIndex(ref outfitIndex, outfitSelect, +1);
         if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
-        }
-    }
-    public void LegsLeft() {
-        ChangeIndex(ref legsIndex, legsSelect, -1);
-        if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
-        }
-    }
-    public void LegsRight() {
-        ChangeIndex(ref legsIndex, legsSelect, +1);
-        if (networkData != null){
-            networkData.SetAppearanceServerRpc(hairIndex, headIndex, faceIndex, bodyIndex, legsIndex);
+            networkData.SetAppearanceServerRpc(hairBackIndex, eyebrowsIndex, hairFrontIndex, eyesIndex, skinIndex, outfitIndex);
         }
     }
 
