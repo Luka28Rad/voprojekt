@@ -18,12 +18,12 @@ public class CartSlot : MonoBehaviour, IDropHandler
         Debug.Log("Dropped in cart: "+cartNumber.ToString());
         if (eventData.pointerDrag != null)
         {
-            var dragged = eventData.pointerDrag.transform as RectTransform;
-            dragged.anchoredPosition = Vector2.zero;
-            if (cartNumber == 1)
-                lobby.ChangeLocation(1);
-            else if (cartNumber == 2)
-                lobby.ChangeLocation(2);
+            var drag= eventData.pointerDrag.GetComponent<DragDrop>();
+            if (drag != null) drag.SetDropValid(true);
+            var draggedRT = eventData.pointerDrag.GetComponent<RectTransform>();
+            draggedRT.SetParent(transform, false);
+            draggedRT.anchoredPosition = Vector2.zero;
+            lobby.ChangeLocation(cartNumber);
         }
     }
 }

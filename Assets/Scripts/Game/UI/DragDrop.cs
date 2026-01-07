@@ -7,6 +7,11 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private Canvas canvas;
     private RectTransform rt;
     private CanvasGroup canvasGroup;
+    
+    private Transform ogParent;
+    private Vector2 originalAnchoredPos;
+    private bool validDrop;
+
     private void Awake()
     {
         rt = GetComponent<RectTransform>();
@@ -17,6 +22,9 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         canvasGroup.blocksRaycasts = false;
         if (GameUI.dayTimeScreen.activeInHierarchy)
         {
+            validDrop = false;
+            ogParent = rt.parent;
+            originalAnchoredPos = rt.anchoredPosition;
             canvasGroup.alpha = 0.8f;
             Debug.Log("Started drag!");
         }
@@ -38,6 +46,11 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         {
             canvasGroup.alpha = 1f;
             Debug.Log("Ended Drag!");
+            if (!validDrop)
+            {
+                rt.SetParent(ogParent);
+                rt.anchoredPosition = originalAnchoredPos;
+            }
         }
     }
 
@@ -52,5 +65,10 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void OnDrop(PointerEventData eventData)
     {
         throw new System.NotImplementedException();
+    }
+
+    public void SetDropValid(bool state)
+    {
+        validDrop = state;
     }
 }
