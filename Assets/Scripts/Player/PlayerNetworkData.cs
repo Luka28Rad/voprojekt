@@ -8,11 +8,13 @@ public class PlayerNetworkData : NetworkBehaviour
 {
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
     public NetworkVariable<int> TrainCart = new NetworkVariable<int>(0); // 0 = no assigned cart
-    public NetworkVariable<int> hairIndex = new NetworkVariable<int>();
-    public NetworkVariable<int> headIndex = new NetworkVariable<int>();
-    public NetworkVariable<int> faceIndex = new NetworkVariable<int>();
-    public NetworkVariable<int> bodyIndex = new NetworkVariable<int>();
-    public NetworkVariable<int> legsIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> hairBackIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> eyebrowsIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> hairFrontIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> eyesIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> skinIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> outfitIndex = new NetworkVariable<int>();
+    public NetworkVariable<bool> dead = new NetworkVariable<bool>(false); //Ako je igrac izglasan van ili ubijen onda je true
     public PlayerRole MyRole { get; private set; } = PlayerRole.Unassigned;
     public bool PlayerIsAlive { get; private set; } = true;
     public event Action<PlayerRole> OnRoleAssigned;
@@ -41,12 +43,13 @@ public class PlayerNetworkData : NetworkBehaviour
 
     //Postavljanje indeksa u PlayerNetworkData kako bi skripta PlayerUIManager mogla uzeti te indekse
     [ServerRpc]
-    public void SetAppearanceServerRpc(int hair, int head, int face, int body, int legs){
-        hairIndex.Value = hair;
-        headIndex.Value = head;
-        faceIndex.Value = face;
-        bodyIndex.Value = body;
-        legsIndex.Value = legs;
+    public void SetAppearanceServerRpc(int hairBack, int eyebrows, int hairFront, int eyes, int skin, int outfit){
+        hairBackIndex.Value = hairBack;
+        eyebrowsIndex.Value = eyebrows;
+        hairFrontIndex.Value = hairFront;
+        eyesIndex.Value = eyes;
+        skinIndex.Value = skin;
+        outfitIndex.Value = outfit;
     }
     [ServerRpc]
     public void SetLocationServerRpc(int cart)

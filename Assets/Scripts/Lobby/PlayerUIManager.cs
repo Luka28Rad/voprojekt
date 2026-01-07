@@ -21,11 +21,18 @@ public class PlayerUIManager : MonoBehaviour
                 
             //Postavi ispravne indekse za tu karticu
             if(editLook != null){
-                editLook.hairRenderer.sprite = editLook.hairSelect[playerNetworkData.hairIndex.Value];
-                editLook.headRenderer.sprite = editLook.headSelect[playerNetworkData.headIndex.Value];
-                editLook.faceRenderer.sprite = editLook.faceSelect[playerNetworkData.faceIndex.Value];
-                editLook.bodyRenderer.sprite = editLook.bodySelect[playerNetworkData.bodyIndex.Value];
-                editLook.legsRenderer.sprite = editLook.legsSelect[playerNetworkData.legsIndex.Value];
+                editLook.hairBackRenderer.sprite = editLook.hairBackSelect[playerNetworkData.hairBackIndex.Value];
+                editLook.hairBackRenderer.SetNativeSize();
+                editLook.eyebrowsRenderer.sprite = editLook.eyebrowsSelect[playerNetworkData.eyebrowsIndex.Value];
+                editLook.eyebrowsRenderer.SetNativeSize();
+                editLook.hairFrontRenderer.sprite = editLook.hairFrontSelect[playerNetworkData.hairFrontIndex.Value];
+                editLook.hairFrontRenderer.SetNativeSize();
+                editLook.eyesRenderer.sprite = editLook.eyesSelect[playerNetworkData.eyesIndex.Value];
+                editLook.eyesRenderer.SetNativeSize();
+                editLook.skinRenderer.sprite = editLook.skinSelect[playerNetworkData.skinIndex.Value];
+                editLook.skinRenderer.SetNativeSize();
+                editLook.outfitRenderer.sprite = editLook.outfitSelect[playerNetworkData.outfitIndex.Value];
+                editLook.outfitRenderer.SetNativeSize();
             }
         }
     }
