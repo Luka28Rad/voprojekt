@@ -115,8 +115,19 @@ public class LobbyManager : NetworkBehaviour
         {
             Debug.Log("Clients: changing from waiting room to lobby");
             waitingRoomScreen.SetActive(false);
-            lobbyScreen.SetActive(true);
+            // Change the player container size depending on the amount of players in the lobby
+            /*GridLayoutGroup grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
+            int playerCount = NetworkManager.Singleton.ConnectedClientsList.Count;
+            int columns = Mathf.Min(playerCount, 5);
+            int rows = Mathf.CeilToInt(playerCount / (float)columns);
+            float containerWidth = playerCardsContainer.GetComponent<RectTransform>().rect.width;
+            float containerHeight = playerCardsContainer.GetComponent<RectTransform>().rect.height;
+            float cellWidth = (containerWidth - grid.spacing.x * (columns - 1));
+            float cellHeight = cellWidth * 1.25f;
+            grid.cellSize = new Vector2(cellWidth, cellHeight);*/
             playerCardsContainer.gameObject.SetActive(true); //Make player cards appear
+            lobbyScreen.SetActive(true);
+            
         }
         else if (lobbyScreen.activeInHierarchy)
         {
@@ -134,13 +145,24 @@ public class LobbyManager : NetworkBehaviour
             var rt = playerCardsContainer.GetComponent<RectTransform>();
             rt.SetParent(GameUI.dayTimeScreen.transform, false);
             rt.SetSiblingIndex(3);
-            rt.anchoredPosition = new Vector2(5f, -65f);
+            rt.offsetMin += new Vector2(0f, -80f);
+            rt.offsetMax += new Vector2(0f, -80f);
+            GridLayoutGroup grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
+            if (NetworkManager.Singleton.ConnectedClientsList.Count > 5)
+            {
+                grid.cellSize = new Vector2(140, 175);
+                grid.spacing = new Vector2(15, 25);
+            }
             playerCardsContainer.SetSiblingIndex(1);
-            var grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
-            //grid.cellSize = new Vector2(140, 180);
-            //grid.spacing = new Vector2(15, 15);
             playerContainer.transform.SetParent(playerCardsContainer.transform, false);
+            playerContainer.transform.SetAsFirstSibling();
             playerModel.transform.SetParent(playerContainer.transform, false);
+            var cardRT = playerModel.GetComponent<RectTransform>();
+            cardRT.anchorMin = Vector2.zero;
+            cardRT.anchorMax = Vector2.one;
+            cardRT.anchoredPosition = Vector2.zero;
+            cardRT.sizeDelta = Vector2.zero;
+            cardRT.localScale = Vector3.one;
             playerCardsContainer.gameObject.SetActive(true);
             gameScreen.SetActive(true);
         }
@@ -183,24 +205,27 @@ public class LobbyManager : NetworkBehaviour
             foreach (Transform child in _allCards)
             {
                 var edit = child.gameObject.GetComponent<EditPlayerLook>();
+                if (edit == null) continue;
                 int cart = edit.networkData.TrainCart.Value;
                 Debug.Log("child is in cart " + cart.ToString());
-                if (cart != 0)
-                {
-                    if (cart == 1)
-                    {
-                        child.SetParent(cart1, false);
-                    }
-                    else if(cart == 2)
-                    {
-                        child.SetParent(cart2, false);
-                    }
-                }
-                else if(cart==0 && edit.linkedClientId != NetworkManager.Singleton.LocalClientId)
-                {
+                if (cart == 0)
                     child.SetParent(playerCardsContainer, false);
-                }
+                else if (cart == 1)
+                    child.SetParent(cart1, false);
+                else if (cart == 2)
+                    child.SetParent(cart2, false);
             }
+            int playerCart = playerModel.GetComponent<EditPlayerLook>().networkData.TrainCart.Value;
+            if (playerCart == 0)
+            {
+                playerContainer.transform.SetParent(playerCardsContainer);
+                playerContainer.transform.SetAsFirstSibling();
+            }
+            else if(playerCart == 1)
+                playerContainer.transform.SetParent(cart1);
+            else if(playerCart == 2)
+                playerContainer.transform.SetParent(cart2);
+            
         }
     }
     // this method gets used to set role descriptions and the color of the role name [green = good, red = bad]
@@ -223,16 +248,16 @@ public class LobbyManager : NetworkBehaviour
         {
             cart2.GetChild(i).SetParent(playerCardsContainer.transform, false);
         }
-        if (playerModel != null) playerModel.transform.SetParent(playerContainer.transform, false);
+        if (playerModel != null) playerContainer.transform.SetParent(playerCardsContainer);
         var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
         data.SetLocationServerRpc(0);
     }
     public void ChangeLocation(int cart)
     {
         if (cart == 1)
-            playerModel.transform.SetParent(cart1, false);
+            playerContainer.transform.SetParent(cart1, false);
         else if (cart == 2)
-            playerModel.transform.SetParent(cart2, false);
+            playerContainer.transform.SetParent(cart2, false);
         var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
         data.SetLocationServerRpc(cart);
     }
