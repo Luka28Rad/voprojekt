@@ -1,5 +1,8 @@
+using NUnit.Framework.Constraints;
 using System.Collections;
+using System.Threading;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameTimeManager : NetworkBehaviour
@@ -30,6 +33,9 @@ public class GameTimeManager : NetworkBehaviour
     [SerializeField] private float dayTimeDuration;
     [SerializeField] private float nightTimeDuration;
     [SerializeField] private float gameOverTimeDuration;
+    [SerializeField] private float transitionDuration;
+    [SerializeField] private float newspaperDuration;
+    public Coroutine transitionRoutine;
 
     #region helperRPCs
     [ClientRpc] private void UIChangeClientRpc()
@@ -135,5 +141,57 @@ public class GameTimeManager : NetworkBehaviour
         }
         GameOverTime.Value = 0;
         lobby.UIChangeClientRpc();
+    }
+    public void StartTransitionTimer(int panelIndex)
+    {
+        if (transitionRoutine != null)
+            StopCoroutine(transitionRoutine);
+        transitionRoutine = StartCoroutine(TransitionCountdown(panelIndex));
+    }
+    private IEnumerator TransitionCountdown(int panelIndex)
+    {
+        gameUI.timer.gameObject.SetActive(false);
+        gameUI.transitionScreen.SetActive(true);
+        for (int i = 0; i < gameUI.transitionScreen.transform.childCount; i++)
+            gameUI.transitionScreen.transform.GetChild(i).gameObject.SetActive(false);
+        if (panelIndex == 1)
+        {
+            Transform newspaperScreen = gameUI.transitionScreen.transform.GetChild(2);
+            newspaperScreen.gameObject.SetActive(true);
+            NewspaperAnimation news = null;
+            int child_index = -1;
+            if (false) //nothing burger day
+                child_index = 0;
+            else //someone was killed
+                child_index = 1;
+            newspaperScreen.GetChild(child_index).gameObject.SetActive(true);
+            news = newspaperScreen.GetChild(child_index).gameObject.GetComponent<NewspaperAnimation>();
+            news.PlayAnimation();
+            yield return new WaitForSeconds(newspaperDuration-news.duration);
+            newspaperScreen.GetChild(child_index).gameObject.SetActive(false);
+            newspaperScreen.gameObject.SetActive(false);
+        }
+        var panel = gameUI.transitionScreen.transform.GetChild(panelIndex);
+        panel.gameObject.SetActive(true);
+        var train = panel.GetChild(1).GetComponent<TrainAnimation>();
+        train.PlayAnimation();
+        yield return new WaitForSeconds(transitionDuration-train.duration);
+        panel.gameObject.SetActive(false);
+        gameUI.transitionScreen.SetActive(false);
+        gameUI.timer.gameObject.SetActive(true);
+        if (panelIndex == 0)
+        {
+            gameUI.nightTimeScreen.SetActive(true);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                StartNightTimeTimer();
+        }
+            
+        else if (panelIndex == 1)
+        { 
+            gameUI.dayTimeScreen.SetActive(true);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                StartDayTimeTimer();
+        }
+        transitionRoutine = null;
     }
 }

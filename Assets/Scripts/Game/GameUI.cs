@@ -10,7 +10,7 @@ public class GameUI : MonoBehaviour
 
     [SerializeField] private GameTimeManager gameTimeManager;
     [SerializeField] private LobbyManager lobby;
-    [SerializeField] private TMP_Text timer;
+    [SerializeField] public TMP_Text timer;
 
     [Header("Day Time Screen")]
     [SerializeField] public GameObject dayTimeScreen;
@@ -19,6 +19,9 @@ public class GameUI : MonoBehaviour
     [Header("Night Time Screen")]
     [SerializeField] public GameObject nightTimeScreen;
     // add ability UI here
+
+    [Header("Transition Time Screen")]
+    [SerializeField] public GameObject transitionScreen;
 
     [Header("Voting Screen")]
     [SerializeField] public GameObject votingScreen;
@@ -83,6 +86,10 @@ public class GameUI : MonoBehaviour
     {
         nightTimeTimerActive = false;
     }
+    private void ToggleTransition(int panelIndex)
+    {
+        gameTimeManager.StartTransitionTimer(panelIndex);
+    }
     public void UIChange() // make all clients proceed to the correct UI
     {
         if (dayTimeScreen.activeInHierarchy)
@@ -98,9 +105,7 @@ public class GameUI : MonoBehaviour
                 rect.anchoredPosition = pos;
             }
             voteUI.ResolveVotes();
-            nightTimeScreen.SetActive(true);
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-                gameTimeManager.StartNightTimeTimer();
+            ToggleTransition(0);
         }
         else if (nightTimeScreen.activeInHierarchy)
         {
@@ -117,9 +122,7 @@ public class GameUI : MonoBehaviour
             {
                 // continue the game
                 nightTimeScreen.SetActive(false);
-                dayTimeScreen.SetActive(true);
-                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-                    gameTimeManager.StartDayTimeTimer();
+                ToggleTransition(1);
             }
         }
     }

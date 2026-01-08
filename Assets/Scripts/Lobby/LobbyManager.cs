@@ -261,6 +261,7 @@ public class LobbyManager : NetworkBehaviour
         var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
         data.SetLocationServerRpc(cart);
     }
+    
     private void StartGame() // Lobby --> ShowCaseScreen
     {
         // IsHost je svojstvo iz NetworkBehaviour-a koje je istinito samo na računalu koje je pokrenulo igru kao host.
