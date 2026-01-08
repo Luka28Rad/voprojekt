@@ -12,6 +12,8 @@ public class CartSlot : MonoBehaviour, IDropHandler
             cartNumber = 1;
         else if (name == "TrainCart2")
             cartNumber = 2;
+        else if (name == "TrainCart3")
+            cartNumber = 3;
     }
     public void OnDrop(PointerEventData eventData)
     {

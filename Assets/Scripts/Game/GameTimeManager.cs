@@ -4,11 +4,18 @@ using System.Threading;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameTimeManager : NetworkBehaviour
 {
     [SerializeField] LobbyManager lobby;
     [SerializeField] GameUI gameUI;
+    [SerializeField] Sprite cart1;
+    [SerializeField] Sprite cart2;
+    [SerializeField] Sprite cart3;
+    [SerializeField] Sprite armrest1;
+    [SerializeField] Sprite armrest2;
+    [SerializeField] Sprite armrest3;
     public NetworkVariable<float> ShowcaseTime = new NetworkVariable<float>(
             0f,
             NetworkVariableReadPermission.Everyone,
@@ -181,11 +188,28 @@ public class GameTimeManager : NetworkBehaviour
         gameUI.timer.gameObject.SetActive(true);
         if (panelIndex == 0)
         {
+            int cart = lobby.GetPlayerModel().GetComponent<EditPlayerLook>().networkData.TrainCart.Value;
+            var bg_image = gameUI.nightTimeScreen.GetComponent<Image>();
+            var armrest_image = gameUI.nightTimeScreen.transform.GetChild(0).GetComponent<Image>();
+            if (cart == 1)
+            {
+                bg_image.sprite = cart1;
+                armrest_image.sprite = armrest1;
+            }
+            else if (cart == 2)
+            {
+                bg_image.sprite = cart2;
+                armrest_image.sprite = armrest2;
+            }
+            else if (cart == 3)
+            {
+                bg_image.sprite = cart3;
+                armrest_image.sprite = armrest3;
+            }
             gameUI.nightTimeScreen.SetActive(true);
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 StartNightTimeTimer();
         }
-            
         else if (panelIndex == 1)
         { 
             gameUI.dayTimeScreen.SetActive(true);
