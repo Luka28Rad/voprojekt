@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -171,6 +172,16 @@ public class GameTimeManager : NetworkBehaviour
                 child_index = 0;
             else //someone was killed
                 child_index = 1;
+
+            //
+            //Patrick promjene
+            //Dohvati lobbyManager i uzmi objekt koji ima kartice igraca
+            LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); //Nije vise potrebno, neka ostane
+            GameObject playerCardsContainer = lobbyManager.playerContainer; //Nije vise potrebno, neka ostane
+            FindAndReparentDeadPlayer(playerCardsContainer.transform);
+            //End Patrick promjena
+            //
+
             newspaperScreen.GetChild(child_index).gameObject.SetActive(true);
             news = newspaperScreen.GetChild(child_index).gameObject.GetComponent<NewspaperAnimation>();
             news.PlayAnimation();
@@ -217,5 +228,36 @@ public class GameTimeManager : NetworkBehaviour
                 StartDayTimeTimer();
         }
         transitionRoutine = null;
+    }
+
+    //Ovo za sada dohvati prvog u listi kojeg najde da ima dead = true, kada dodamo onaj kao stog ili sto vec sa svim mrtvima treba promjeniti da
+    //uzme prvog od tih kojeg najde
+    private void FindAndReparentDeadPlayer(Transform parent)
+    {
+        EditPlayerLook[] allCards = FindObjectsOfType<EditPlayerLook>(true);
+
+        foreach (var card in allCards)
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+                if (card.linkedClientId == client.ClientId && data.dead.Value)
+                {
+                    Transform deadParent = gameUI.transitionScreen.transform;
+
+                   //Ovo dojde do onog elementa gdje se nalazi kao mjesto na novinama za mrtvog igraca
+                    for (int i = 0; i < 3; i++)
+                    {
+                        deadParent = deadParent.GetChild(deadParent.childCount - 1);
+                    }
+
+                    //Reparenta karticu
+                    card.transform.SetParent(deadParent, false);
+                    card.transform.localPosition = Vector3.zero;
+                    card.transform.SetAsLastSibling();
+                    return;
+                }
+            }
+        }
     }
 }

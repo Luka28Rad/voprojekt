@@ -101,7 +101,7 @@ public class GameUI : MonoBehaviour
                 RectTransform rect = timer.GetComponent<RectTransform>();
                 Vector2 pos = new Vector2(150f,-100f); //hardcoded = bad
                 votingMenuButton.interactable = true;
-                voteUI.CloseVotingPanel();
+                voteUI.ClearButtons();
                 rect.anchoredPosition = pos;
             }
             voteUI.ResolveVotes();

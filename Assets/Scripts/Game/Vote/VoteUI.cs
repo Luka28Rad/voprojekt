@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class VoteingUI : NetworkBehaviour
 {
@@ -13,19 +14,29 @@ public class VoteingUI : NetworkBehaviour
     private Dictionary<ulong, ulong> votes = new Dictionary<ulong, ulong>(); //Zaa drzanje tko je za koga glasao clinetId -> clinetID igraca za kojeg glasa
     private ulong selectedTargetClientId = ulong.MaxValue;
     private Button selectedButton = null;
+    private Button confirmedButton = null;
 
     //Otvori voting panel i stovri gumbe
     public void OpenVotingPanel()
     {
-        ClearButtons(); //Makni one stare gumbe da nema kopija
+        //ClearButtons(); //Makni one stare gumbe da nema kopija
 
         //Projdi kroz sve spojene igrace i napravi gumb s njihovim imenom
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             var playerData = client.PlayerObject.GetComponent<PlayerNetworkData>();
-
+            bool buttonExists = false;
+            foreach (Transform child in playerListParent)
+            {
+                TMP_Text text = child.GetComponentInChildren<TMP_Text>();
+                if (text != null && text.text == playerData.PlayerName.Value.ToString())
+                {
+                    buttonExists = true;
+                    break;
+                }
+            }
             //Ako nije igrac mrtav napravi gumb za njega
-            if (!(playerData.dead.Value))
+            if (!(playerData.dead.Value) && !(buttonExists))
             {
                 string playerName = playerData.PlayerName.Value.ToString();
                 ulong targetClientId = client.ClientId;
@@ -40,11 +51,11 @@ public class VoteingUI : NetworkBehaviour
     //Zatvori voting panel ilitga makni gumbe
     public void CloseVotingPanel()
     {
-        ClearButtons();
+        //ClearButtons();
     }
 
     //Funkcija za micanje gumbi kada se vote panel zatvara
-    private void ClearButtons()
+    public void ClearButtons()
     {
         //Projdi kroz citavu listu i unisti gumbe sve
         foreach (Transform child in playerListParent)
@@ -63,17 +74,25 @@ public class VoteingUI : NetworkBehaviour
         button.onClick.AddListener(() => {
             SelectVoteTarget(targetClientId, button);
         }); //Kada se klikne na taj gumb onda se glasa za igracem sa specificiranim ClinetId
+        if (votes.TryGetValue(NetworkManager.Singleton.LocalClientId, out ulong votedFor) && votedFor == targetClientId)
+        {
+            button.image.color = Color.red;
+            confirmedButton = button;
+        }
     }
 
     private void SelectVoteTarget(ulong targetClientId, Button button)
     {
-        if (selectedButton != null)
+        if (selectedButton != null && selectedButton != confirmedButton)
         {
             selectedButton.image.color = Color.white;
         }
         selectedTargetClientId = targetClientId;
         selectedButton = button;
-        button.image.color = Color.yellow;
+        if (selectedButton != confirmedButton)
+        {
+            button.image.color = Color.yellow;
+        }
         Debug.Log($"Selected vote target: {targetClientId}");
     }
 
@@ -97,14 +116,48 @@ public class VoteingUI : NetworkBehaviour
         }
 
         Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} CONFIRMED vote for {selectedTargetClientId}");
-        ClearVote();
+
+        //Oznaci novi confirmed
+        if (selectedButton != null){
+
+            //Resetiraj prethodni confirmed gumb
+            if (confirmedButton != null){
+                confirmedButton.image.color = Color.white;
+            }
+
+            //Postavi novi confirmed
+            confirmedButton = selectedButton;
+            confirmedButton.image.color = Color.red;
+
+            selectedButton = null; //Resetiraj selekciju
+        }
+        //ClearVote();
     }
 
     //Za skip button
     public void CastSkipVote()
     {
         selectedTargetClientId = ulong.MaxValue;
-        CastVote();
+        if (IsClient)
+        {
+            //Pošalji na server vote igraca
+            CastVoteServerRpc(NetworkManager.Singleton.LocalClientId, selectedTargetClientId);
+        }
+
+        Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} CONFIRMED vote for {selectedTargetClientId}");
+        if (selectedButton != null && selectedButton != confirmedButton)
+        {
+            selectedButton.image.color = Color.white;
+        }
+        selectedButton = null;
+        Button skipButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+        if (confirmedButton != null && confirmedButton != skipButton)
+        {
+            confirmedButton.image.color = Color.white;
+        }
+        confirmedButton = skipButton;
+        confirmedButton.image.color = Color.red;
+        //CastVote();
     }
 
     //Prikupljanje glasova na serveru
@@ -237,6 +290,8 @@ public class VoteingUI : NetworkBehaviour
 
         //Resetiranje
         votes.Clear();
+        ClearVote();
+        ClearButtons();
     }
 
     //Dojaviti tko je bio izbacen za mjenjanje nekih UI elemenata ili sto ce biti potrebno
@@ -244,7 +299,10 @@ public class VoteingUI : NetworkBehaviour
     private void VotingResultClientRpc(ulong result)
     {
         Debug.Log($"Voting result on client: {result}");
-        string name = "Skip";
+        string name = "Unknown";
+        if (result == ulong.MaxValue) {
+            name = "Skip";
+        }
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(result, out var client))
         {
             var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
