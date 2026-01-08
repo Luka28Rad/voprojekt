@@ -61,7 +61,7 @@ public class LobbyManager : NetworkBehaviour
     //maybe add a direct reference to the sprite renderer as well
 
     [Header("Game Screen")]
-    [SerializeField] private GameObject playerContainer;
+    [SerializeField] public GameObject playerContainer;
     [SerializeField] private Transform cart1;
     [SerializeField] private Transform cart2;
 
