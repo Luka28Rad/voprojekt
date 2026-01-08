@@ -1,37 +1,22 @@
 fileFormatVersion: 2
-guid: fa91a10cfba61504fb5236288725a6d0
+guid: 9bc0c6cb3294f144d9fb35536c723b21
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2684806634962156635
-    second: body-flapping-Sheet_0
+      213: 4856927711095655446
+    second: body-types-Sheet_0
   - first:
-      213: -7426185533081494006
-    second: body-flapping-Sheet_1
+      213: 6402835306605274777
+    second: body-types-Sheet_1
   - first:
-      213: -7244288506526833405
-    second: body-flapping-Sheet_2
+      213: -1123153250835789624
+    second: body-types-Sheet_2
   - first:
-      213: 4801562971703223330
-    second: body-flapping-Sheet_3
+      213: 8748999027916131427
+    second: body-types-Sheet_3
   - first:
-      213: 672662307511384862
-    second: body-flapping-Sheet_4
-  - first:
-      213: -2269911265261596069
-    second: body-flapping-Sheet_5
-  - first:
-      213: 2608829089601229429
-    second: body-flapping-Sheet_6
-  - first:
-      213: -740282388194940686
-    second: body-flapping-Sheet_7
-  - first:
-      213: -4703249666506304428
-    second: body-flapping-Sheet_8
-  - first:
-      213: -6034943739638120598
-    second: body-flapping-Sheet_9
+      213: -776746319995664873
+    second: body-types-Sheet_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -64,7 +49,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -102,7 +87,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -140,12 +125,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: body-flapping-Sheet_0
+      name: body-types-Sheet_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 65
-        width: 32
+        x: 6
+        y: 1
+        width: 28
         height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -155,19 +140,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b5cf787e869524520800000000000000
-      internalID: 2684806634962156635
+      spriteID: 61c8b972506476340800000000000000
+      internalID: 4856927711095655446
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-flapping-Sheet_1
+      name: body-types-Sheet_1
       rect:
         serializedVersion: 2
-        x: 44
-        y: 65
-        width: 32
+        x: 46
+        y: 1
+        width: 28
         height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -177,19 +162,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a0e58807a93e0f890800000000000000
-      internalID: -7426185533081494006
+      spriteID: 9966985a9c07bd850800000000000000
+      internalID: 6402835306605274777
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-flapping-Sheet_2
+      name: body-types-Sheet_2
       rect:
         serializedVersion: 2
-        x: 84
-        y: 65
-        width: 32
+        x: 86
+        y: 1
+        width: 28
         height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -199,18 +184,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 305e5063cfd177b90800000000000000
-      internalID: -7244288506526833405
+      spriteID: 8c88b9fa112c960f0800000000000000
+      internalID: -1123153250835789624
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-flapping-Sheet_3
+      name: body-types-Sheet_3
       rect:
         serializedVersion: 2
         x: 123
-        y: 65
+        y: 1
         width: 34
         height: 53
       alignment: 0
@@ -221,18 +206,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2242a0f351492a240800000000000000
-      internalID: 4801562971703223330
+      spriteID: 36ccd2ff240ba6970800000000000000
+      internalID: 8748999027916131427
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-flapping-Sheet_4
+      name: body-types-Sheet_4
       rect:
         serializedVersion: 2
         x: 163
-        y: 65
+        y: 1
         width: 34
         height: 53
       alignment: 0
@@ -243,118 +228,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e1bb2050ec6c55900800000000000000
-      internalID: 672662307511384862
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: body-flapping-Sheet_5
-      rect:
-        serializedVersion: 2
-        x: 2
-        y: 1
-        width: 36
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b52dc621bb7af70e0800000000000000
-      internalID: -2269911265261596069
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: body-flapping-Sheet_6
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 1
-        width: 36
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 572136d1c3c643420800000000000000
-      internalID: 2608829089601229429
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: body-flapping-Sheet_7
-      rect:
-        serializedVersion: 2
-        x: 82
-        y: 1
-        width: 36
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2f8a922171df9b5f0800000000000000
-      internalID: -740282388194940686
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: body-flapping-Sheet_8
-      rect:
-        serializedVersion: 2
-        x: 122
-        y: 1
-        width: 36
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 454dae1e853babeb0800000000000000
-      internalID: -4703249666506304428
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: body-flapping-Sheet_9
-      rect:
-        serializedVersion: 2
-        x: 162
-        y: 1
-        width: 36
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a6ff66fa4a29f3ca0800000000000000
-      internalID: -6034943739638120598
+      spriteID: 716011c56517835f0800000000000000
+      internalID: -776746319995664873
       vertices: []
       indices: 
       edges: []
@@ -373,16 +248,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      body-flapping-Sheet_0: 2684806634962156635
-      body-flapping-Sheet_1: -7426185533081494006
-      body-flapping-Sheet_2: -7244288506526833405
-      body-flapping-Sheet_3: 4801562971703223330
-      body-flapping-Sheet_4: 672662307511384862
-      body-flapping-Sheet_5: -2269911265261596069
-      body-flapping-Sheet_6: 2608829089601229429
-      body-flapping-Sheet_7: -740282388194940686
-      body-flapping-Sheet_8: -4703249666506304428
-      body-flapping-Sheet_9: -6034943739638120598
+      body-types-Sheet_0: 4856927711095655446
+      body-types-Sheet_1: 6402835306605274777
+      body-types-Sheet_2: -1123153250835789624
+      body-types-Sheet_3: 8748999027916131427
+      body-types-Sheet_4: -776746319995664873
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

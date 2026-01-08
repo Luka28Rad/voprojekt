@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c27438baeda3f7c4d80ef04c62d21652
+guid: 6d8bccaf6a71fa34daaa01b1ea0ad700
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7135879743182878662
-    second: eyebrow-frown-Sheet_0
+      213: 5785835261083591607
+    second: angery-effect-Sheet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,12 +113,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: eyebrow-frown-Sheet_0
+      name: angery-effect-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 440
+        width: 80
         height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6c73254a1dcb70360800000000000000
-      internalID: 7135879743182878662
+      spriteID: 7b321d9e38a6b4050800000000000000
+      internalID: 5785835261083591607
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      eyebrow-frown-Sheet_0: 7135879743182878662
+      angery-effect-Sheet_0: 5785835261083591607
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -27,6 +27,7 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] private GameTimeManager Timer;
     [SerializeField] private PlayerUIManager PlayerUI;
     [SerializeField] private GameUI GameUI;
+    [SerializeField] private Sprite[] role_emblems;
 
     [Header("Screens")]
     [SerializeField] private GameObject mainMenuScreen;
@@ -83,6 +84,8 @@ public class LobbyManager : NetworkBehaviour
             desc.Add(PlayerRole.Doctor, "Your part of the elite. Help the poor by shielding them for one night from any attackers. You can't shield a person consecutively.");
             desc.Add(PlayerRole.Investigator, "You have a new case, Columbo. You have to interogate people to find out on which side they are on.");
             desc.Add(PlayerRole.Impostor, "Its time to hunt! Kill all humans to get your sweet victory.");
+            desc.Add(PlayerRole.ImpostorControl, "Its time to hunt! Control your fellows to make them kill others!");
+            desc.Add(PlayerRole.Fool, "Huzzah! You are the king's entertainer! Get voted out to win and have the last laugh be yours.");
         }
     }
 
@@ -115,16 +118,6 @@ public class LobbyManager : NetworkBehaviour
         {
             Debug.Log("Clients: changing from waiting room to lobby");
             waitingRoomScreen.SetActive(false);
-            // Change the player container size depending on the amount of players in the lobby
-            /*GridLayoutGroup grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
-            int playerCount = NetworkManager.Singleton.ConnectedClientsList.Count;
-            int columns = Mathf.Min(playerCount, 5);
-            int rows = Mathf.CeilToInt(playerCount / (float)columns);
-            float containerWidth = playerCardsContainer.GetComponent<RectTransform>().rect.width;
-            float containerHeight = playerCardsContainer.GetComponent<RectTransform>().rect.height;
-            float cellWidth = (containerWidth - grid.spacing.x * (columns - 1));
-            float cellHeight = cellWidth * 1.25f;
-            grid.cellSize = new Vector2(cellWidth, cellHeight);*/
             playerCardsContainer.gameObject.SetActive(true); //Make player cards appear
             lobbyScreen.SetActive(true);
             
@@ -232,11 +225,26 @@ public class LobbyManager : NetworkBehaviour
     [ClientRpc] public void RoleShowcaseParamsClientRpc(PlayerRole roleName, ClientRpcParams clientRpcParams = default)
     {
         roleText.text = roleName.ToString();
+        roleDescription.text = desc[roleName];
+        var logo = roleShowcaseScreen.transform.GetChild(2);
+
         if (roleName == PlayerRole.Impostor)
             roleShowcaseScreen.transform.GetChild(1).GetComponent<TMP_Text>().color = new Color(200, 0, 0);
         else
             roleShowcaseScreen.transform.GetChild(1).GetComponent<TMP_Text>().color = new Color(0, 200, 0);
-        roleDescription.text = desc[roleName];
+
+        if (roleName == PlayerRole.Villager)
+            logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[0];
+        else if (roleName == PlayerRole.Impostor)
+            logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[1];
+        else if (roleName == PlayerRole.Doctor)
+            logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[2];
+        else if (roleName == PlayerRole.Investigator)
+            logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[3];
+        else if (roleName == PlayerRole.ImpostorControl)
+            logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[4];
+        else if (roleName == PlayerRole.Fool)
+            logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[5];
     }
     [ClientRpc] public void ResetLocationClientRpc()
     {
@@ -464,8 +472,10 @@ public class LobbyManager : NetworkBehaviour
     }
     private void ExitToMainMenu() //pressing the X returns you back to the main menu
     {
+        ReturnToMainMenu();
         if (waitingRoomScreen.activeInHierarchy)
         {
+            Debug.Log("Going back to main menu from waiting room.");
             waitingRoomScreen.SetActive(false);
             mainMenuScreen.SetActive(true);
         }
@@ -474,7 +484,6 @@ public class LobbyManager : NetworkBehaviour
             gameOverScreen.SetActive(false);
             mainMenuScreen.SetActive(true);
         }
-        ReturnToMainMenu();
     }
     private void ReturnToMainMenu() // main function for handling exits from the waiting room 
                                     // and disconnecting people from the hosts server

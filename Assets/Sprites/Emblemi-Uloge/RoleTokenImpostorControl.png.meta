@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6d8bccaf6a71fa34daaa01b1ea0ad700
+guid: 1a7be9f8debe99346aef46b7688a4b3d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5785835261083591607
-    second: angery-effect-Sheet_0
+      213: -3577202041064816050
+    second: RoleTokenImpostorControl_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: angery-effect-Sheet_0
+      name: RoleTokenImpostorControl_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 80
-        height: 64
+        y: 1
+        width: 96
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7b321d9e38a6b4050800000000000000
-      internalID: 5785835261083591607
+      spriteID: e42878c42b93b5ec0800000000000000
+      internalID: -3577202041064816050
       vertices: []
       indices: 
       edges: []
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      angery-effect-Sheet_0: 5785835261083591607
+      RoleTokenImpostorControl_0: -3577202041064816050
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

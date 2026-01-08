@@ -1,22 +1,19 @@
 fileFormatVersion: 2
-guid: 9bc0c6cb3294f144d9fb35536c723b21
+guid: 926836fefcf9e634bbd7d0a6eb485fa4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4856927711095655446
-    second: body-types-Sheet_0
+      213: 2877295037245180771
+    second: frown-eye-Sheet_0
   - first:
-      213: 6402835306605274777
-    second: body-types-Sheet_1
+      213: -858300401578752848
+    second: frown-eye-Sheet_1
   - first:
-      213: -1123153250835789624
-    second: body-types-Sheet_2
+      213: 7694269755474261495
+    second: frown-eye-Sheet_2
   - first:
-      213: 8748999027916131427
-    second: body-types-Sheet_3
-  - first:
-      213: -776746319995664873
-    second: body-types-Sheet_4
+      213: 1015658145758987519
+    second: frown-eye-Sheet_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -87,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -125,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: body-types-Sheet_0
+      name: frown-eye-Sheet_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 1
-        width: 28
-        height: 53
+        x: 11
+        y: 36
+        width: 169
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 61c8b972506476340800000000000000
-      internalID: 4856927711095655446
+      spriteID: 36b4ef087943ee720800000000000000
+      internalID: 2877295037245180771
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-types-Sheet_1
+      name: frown-eye-Sheet_1
       rect:
         serializedVersion: 2
-        x: 46
-        y: 1
-        width: 28
-        height: 53
+        x: 180
+        y: 36
+        width: 9
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -162,20 +159,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9966985a9c07bd850800000000000000
-      internalID: 6402835306605274777
+      spriteID: 0b4c25d0554b614f0800000000000000
+      internalID: -858300401578752848
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-types-Sheet_2
+      name: frown-eye-Sheet_2
       rect:
         serializedVersion: 2
-        x: 86
-        y: 1
-        width: 28
-        height: 53
+        x: 210
+        y: 35
+        width: 9
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,20 +181,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8c88b9fa112c960f0800000000000000
-      internalID: -1123153250835789624
+      spriteID: 7f5331d939987ca60800000000000000
+      internalID: 7694269755474261495
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: body-types-Sheet_3
+      name: frown-eye-Sheet_3
       rect:
         serializedVersion: 2
-        x: 123
-        y: 1
-        width: 34
-        height: 53
+        x: 221
+        y: 35
+        width: 128
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -206,30 +203,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 36ccd2ff240ba6970800000000000000
-      internalID: 8748999027916131427
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: body-types-Sheet_4
-      rect:
-        serializedVersion: 2
-        x: 163
-        y: 1
-        width: 34
-        height: 53
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 716011c56517835f0800000000000000
-      internalID: -776746319995664873
+      spriteID: ff4423fc3b7581e00800000000000000
+      internalID: 1015658145758987519
       vertices: []
       indices: 
       edges: []
@@ -248,11 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      body-types-Sheet_0: 4856927711095655446
-      body-types-Sheet_1: 6402835306605274777
-      body-types-Sheet_2: -1123153250835789624
-      body-types-Sheet_3: 8748999027916131427
-      body-types-Sheet_4: -776746319995664873
+      frown-eye-Sheet_0: 2877295037245180771
+      frown-eye-Sheet_1: -858300401578752848
+      frown-eye-Sheet_2: 7694269755474261495
+      frown-eye-Sheet_3: 1015658145758987519
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

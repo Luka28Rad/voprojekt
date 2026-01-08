@@ -10,7 +10,9 @@ public enum PlayerRole
     Villager,
     Investigator,
     Doctor,
-    Impostor
+    Impostor,
+    ImpostorControl,
+    Fool
 }
 
 public class GameManager : NetworkBehaviour

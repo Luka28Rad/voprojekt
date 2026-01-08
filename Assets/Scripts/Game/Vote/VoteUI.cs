@@ -10,7 +10,9 @@ public class VoteingUI : NetworkBehaviour
     public Transform playerListParent; //Objekt koji drzi gumbe
     public GameObject voteButtonPrefab; //Prefab za gumb
 
-    private Dictionary<ulong, string> votes = new Dictionary<ulong, string>(); //Zaa drzanje tko je za koga glasao clinetId -> ime igraca za kojeg glasa
+    private Dictionary<ulong, ulong> votes = new Dictionary<ulong, ulong>(); //Zaa drzanje tko je za koga glasao clinetId -> clinetID igraca za kojeg glasa
+    private ulong selectedTargetClientId = ulong.MaxValue;
+    private Button selectedButton = null;
 
     //Otvori voting panel i stovri gumbe
     public void OpenVotingPanel()
@@ -32,7 +34,7 @@ public class VoteingUI : NetworkBehaviour
         }
 
         //Skip gumb
-        CreateVoteButton("Skip", ulong.MaxValue);
+        //CreateVoteButton("Skip", ulong.MaxValue);
     }
 
     //Zatvori voting panel ilitga makni gumbe
@@ -58,25 +60,58 @@ public class VoteingUI : NetworkBehaviour
         GameObject buttonObject = Instantiate(voteButtonPrefab, playerListParent);
         buttonObject.GetComponentInChildren<TMP_Text>().text = name;
         Button button = buttonObject.GetComponent<Button>();
-        button.onClick.AddListener(() => {CastVote(targetClientId);}); //Kada se klikne na taj gumb onda se glasa za igracem sa specificiranim ClinetId
+        button.onClick.AddListener(() => {
+            SelectVoteTarget(targetClientId, button);
+        }); //Kada se klikne na taj gumb onda se glasa za igracem sa specificiranim ClinetId
+    }
+
+    private void SelectVoteTarget(ulong targetClientId, Button button)
+    {
+        if (selectedButton != null)
+        {
+            selectedButton.image.color = Color.white;
+        }
+        selectedTargetClientId = targetClientId;
+        selectedButton = button;
+        button.image.color = Color.yellow;
+        Debug.Log($"Selected vote target: {targetClientId}");
+    }
+
+    private void ClearVote()
+    {
+        if (selectedButton != null)
+        {
+            selectedButton.image.color = Color.white;
+            selectedButton = null;
+        }
+        selectedTargetClientId = ulong.MaxValue;
     }
 
     //Funkcija za kada se klikne na gumb sa necijim imenom u vote panelu
-    private void CastVote(ulong targetClientId)
+    public void CastVote()
     {
         if (IsClient)
         {
             //Pošalji na server vote igraca
-            CastVoteServerRpc(NetworkManager.Singleton.LocalClientId, targetClientId);
+            CastVoteServerRpc(NetworkManager.Singleton.LocalClientId, selectedTargetClientId);
         }
 
-        Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} voted for {targetClientId}");
+        Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} CONFIRMED vote for {selectedTargetClientId}");
+        ClearVote();
+    }
+
+    //Za skip button
+    public void CastSkipVote()
+    {
+        selectedTargetClientId = ulong.MaxValue;
+        CastVote();
     }
 
     //Prikupljanje glasova na serveru
     [ServerRpc(RequireOwnership = false)]
     private void CastVoteServerRpc(ulong voterClientId, ulong targetClientId)
     {
+        /*
         //Ime igraca koje je bilo na gumbu
         string voteName;
 
@@ -89,25 +124,30 @@ public class VoteingUI : NetworkBehaviour
         else{
             voteName = GetPlayerNameByClientId(targetClientId);
         }
+        */
 
         //Ako je ovaj igrac vec glasao za nesto promjeni njeogv odabir
-        if (votes.ContainsKey(voterClientId)){
-            votes[voterClientId] = voteName;
+        if (votes.ContainsKey(voterClientId))
+        {
+            votes[voterClientId] = targetClientId;
         }
 
         //Ako igrac nije glasao za nista napravi novi zapis
-        else{
-            votes.Add(voterClientId, voteName);
+        else
+        {
+            votes.Add(voterClientId, targetClientId);
         }
 
-        Debug.Log($"[Server] Received vote from {voterClientId} for {voteName}");
+        Debug.Log($"[Server] Received vote from {voterClientId} for {targetClientId}");
     }
 
     //Dobi ime igraca preko ClientId
     private string GetPlayerNameByClientId(ulong clientId)
     {
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList){
-            if (client.ClientId == clientId){
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.ClientId == clientId)
+            {
                 var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
                 return data.PlayerName.Value.ToString();
             }
@@ -116,10 +156,13 @@ public class VoteingUI : NetworkBehaviour
     }
 
     //Dobi id clienta preko imena
-    private ulong GetClientIdByPlayerName(string playerName) {
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList) {
+    private ulong GetClientIdByPlayerName(string playerName)
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
             var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
-            if (data.PlayerName.Value.ToString() == playerName) {
+            if (data.PlayerName.Value.ToString() == playerName)
+            {
                 return client.ClientId;
             }
         }
@@ -129,20 +172,22 @@ public class VoteingUI : NetworkBehaviour
     //Nakon sto istekne vrijeme
     public void ResolveVotes()
     {
-        Dictionary<string, int> voteCounts = new Dictionary<string, int>();
-        string defaultVote = "Skip";
+        Dictionary<ulong, int> voteCounts = new Dictionary<ulong, int>();
+        ulong defaultVote = ulong.MaxValue;
 
         //Za svakog klijenta pogledaj kako je on glasao, ako nema nista stavi da je glasao za "Skip"
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             ulong clientId = client.ClientId;
-            string vote;
+            ulong vote;
             //Pogledaj za koga je glasao
-            if (votes.ContainsKey(clientId)) {
+            if (votes.ContainsKey(clientId))
+            {
                 vote = votes[clientId];
             }
 
-            else {
+            else
+            {
                 vote = defaultVote;
             }
 
@@ -151,13 +196,14 @@ public class VoteingUI : NetworkBehaviour
             {
                 voteCounts[vote]++;
             }
-            else {
+            else
+            {
                 voteCounts[vote] = 1;
             }
         }
 
         //Tko je dobio najjvise glasova
-        string result = defaultVote;
+        ulong result = defaultVote;
         int max = 0;
         foreach (var pair in voteCounts)
         {
@@ -171,14 +217,16 @@ public class VoteingUI : NetworkBehaviour
             //Nerjeseno
             else if (pair.Value == max)
             {
-                result = "Skip";
+                result = ulong.MaxValue;
             }
         }
 
         //Stavi onaj dead bool onom koji je izbacen
-        if (result != "Skip") {
-            ulong targetClientId = GetClientIdByPlayerName(result);
-            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(targetClientId, out var client)) {
+        if (result != ulong.MaxValue)
+        {
+            //ulong targetClientId = GetClientIdByPlayerName(result);
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(result, out var client))
+            {
                 var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
                 data.dead.Value = true;
             }
@@ -193,8 +241,15 @@ public class VoteingUI : NetworkBehaviour
 
     //Dojaviti tko je bio izbacen za mjenjanje nekih UI elemenata ili sto ce biti potrebno
     [ClientRpc]
-    private void VotingResultClientRpc(string result)
-    { 
+    private void VotingResultClientRpc(ulong result)
+    {
         Debug.Log($"Voting result on client: {result}");
+        string name = "Skip";
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(result, out var client))
+        {
+            var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+            name = data.PlayerName.Value.ToString();
+        }
+        Debug.Log($"Voted out player is: {name}");
     }
 }
