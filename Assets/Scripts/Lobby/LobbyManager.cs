@@ -64,6 +64,10 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] public GameObject playerContainer;
     [SerializeField] private Transform cart1;
     [SerializeField] private Transform cart2;
+    [SerializeField] private Transform cart3;
+    [SerializeField] private GameObject cart1_active;
+    [SerializeField] private GameObject cart2_active;
+    [SerializeField] private GameObject cart3_active;
 
     [Header("Game Over Screen")]
     [SerializeField] private TMP_Text gameOverText;
@@ -111,6 +115,11 @@ public class LobbyManager : NetworkBehaviour
 
         playerCardsContainer = PlayerUI.GetContainer();
     }
+
+    public GameObject GetPlayerModel()
+    {
+        return playerModel;
+    }
     
     [ClientRpc] public void UIChangeClientRpc() // make all clients proceed to the correct UI
     {
@@ -137,16 +146,32 @@ public class LobbyManager : NetworkBehaviour
             //move the cards container for each player down
             var rt = playerCardsContainer.GetComponent<RectTransform>();
             rt.SetParent(GameUI.dayTimeScreen.transform, false);
-            rt.SetSiblingIndex(3);
+            rt.SetSiblingIndex(GameUI.dayTimeScreen.transform.childCount + 1);
             rt.offsetMin += new Vector2(0f, -80f);
             rt.offsetMax += new Vector2(0f, -80f);
             GridLayoutGroup grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
-            if (NetworkManager.Singleton.ConnectedClientsList.Count > 5)
+            int no_players = NetworkManager.Singleton.ConnectedClientsList.Count;
+            cart1_active.SetActive(true);
+            if (no_players > 4)
             {
-                grid.cellSize = new Vector2(140, 175);
-                grid.spacing = new Vector2(15, 25);
+                if (no_players > 5)
+                {
+                    grid.cellSize = new Vector2(140, 175);
+                    grid.spacing = new Vector2(15, 25);
+                }
+                if (no_players >= 5 && no_players <= 7)
+                {
+                    cart3.gameObject.SetActive(false);
+                    cart2_active.SetActive(true);
+                }
+                else
+                    cart3_active.SetActive(true);
             }
-            playerCardsContainer.SetSiblingIndex(1);
+            else
+            {
+                cart2.gameObject.SetActive(false);
+                cart3.gameObject.SetActive(false);
+            }
             playerContainer.transform.SetParent(playerCardsContainer.transform, false);
             playerContainer.transform.SetAsFirstSibling();
             playerModel.transform.SetParent(playerContainer.transform, false);
@@ -195,6 +220,7 @@ public class LobbyManager : NetworkBehaviour
             foreach (Transform t in playerCardsContainer) _allCards.Add(t);
             foreach (Transform t in cart1) _allCards.Add(t);
             foreach (Transform t in cart2) _allCards.Add(t);
+            foreach (Transform t in cart3) _allCards.Add(t);
             foreach (Transform child in _allCards)
             {
                 var edit = child.gameObject.GetComponent<EditPlayerLook>();
@@ -207,6 +233,8 @@ public class LobbyManager : NetworkBehaviour
                     child.SetParent(cart1, false);
                 else if (cart == 2)
                     child.SetParent(cart2, false);
+                else if (cart == 3)
+                    child.SetParent(cart3, false);
             }
             int playerCart = playerModel.GetComponent<EditPlayerLook>().networkData.TrainCart.Value;
             if (playerCart == 0)
@@ -214,10 +242,12 @@ public class LobbyManager : NetworkBehaviour
                 playerContainer.transform.SetParent(playerCardsContainer);
                 playerContainer.transform.SetAsFirstSibling();
             }
-            else if(playerCart == 1)
+            else if (playerCart == 1)
                 playerContainer.transform.SetParent(cart1);
-            else if(playerCart == 2)
+            else if (playerCart == 2)
                 playerContainer.transform.SetParent(cart2);
+            else if (playerCart == 3)
+                playerContainer.transform.SetParent(cart3);
             
         }
     }
@@ -256,6 +286,10 @@ public class LobbyManager : NetworkBehaviour
         {
             cart2.GetChild(i).SetParent(playerCardsContainer.transform, false);
         }
+        for (int i = cart3.childCount - 1; i >= 0; i--)
+        {
+            cart3.GetChild(i).SetParent(playerCardsContainer.transform, false);
+        }
         if (playerModel != null) playerContainer.transform.SetParent(playerCardsContainer);
         var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
         data.SetLocationServerRpc(0);
@@ -266,7 +300,9 @@ public class LobbyManager : NetworkBehaviour
             playerContainer.transform.SetParent(cart1, false);
         else if (cart == 2)
             playerContainer.transform.SetParent(cart2, false);
-        var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
+        else if (cart == 3)
+            playerContainer.transform.SetParent(cart3, false);
+            var data = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
         data.SetLocationServerRpc(cart);
     }
     
