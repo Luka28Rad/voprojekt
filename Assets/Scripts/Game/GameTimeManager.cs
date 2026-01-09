@@ -1,6 +1,7 @@
 using NUnit.Framework.Constraints;
 using System.Collections;
 using System.Threading;
+using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager;
@@ -192,13 +193,14 @@ public class GameTimeManager : NetworkBehaviour
                 var dead_player = newspaperScreen.GetChild(1).transform.GetChild(0).transform.GetChild(0);
                 Debug.Log(dead_player.name+dead_player.transform.childCount.ToString());
                 int index = 0;
-                Color32 color = new Color32(101, 94, 94, 255); //indicator color for a dead player
+                Color32 color = new Color32(0, 0, 0, 255); //indicator color for a dead player
                 for (int i = 1; i <= 7 && i < dead_player.childCount; i++)
                 {
                     Debug.Log("Child component " + i.ToString() + dead_player.GetChild(i).name);
                     var img = dead_player.GetChild(i).GetComponent<Image>();
                     if (img != null) img.color = color;
                 }
+                dead_player.GetChild(0).GetComponent<TMP_Text>().text = "<s>"+dead_player.GetChild(0).GetComponent<TMP_Text>().text+"</s>";
                 dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
             }
             newspaperScreen.gameObject.SetActive(false);
