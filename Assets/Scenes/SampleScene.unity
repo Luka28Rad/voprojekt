@@ -3381,6 +3381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewspaperAnimation
   newspaperRoot: {fileID: 989274697}
+  playerCardsContainer: {fileID: 0}
   duration: 2
   startYoffset: -900
 --- !u!1 &1005164966
@@ -3472,6 +3473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   newspaperRoot: {fileID: 1005164967}
+  playerCardsContainer: {fileID: 0}
   duration: 2
   startYoffset: -900
 --- !u!1 &1040183170
@@ -5236,7 +5238,7 @@ MonoBehaviour:
   nightTimeDuration: 5
   gameOverTimeDuration: 15
   transitionDuration: 10
-  newspaperDuration: 20
+  newspaperDuration: 10
 --- !u!4 &1408394188
 Transform:
   m_ObjectHideFlags: 0

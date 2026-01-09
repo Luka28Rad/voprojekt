@@ -171,22 +171,36 @@ public class GameTimeManager : NetworkBehaviour
             if (false) //nothing burger day
                 child_index = 0;
             else //someone was killed
+            {
                 child_index = 1;
-
-            //
-            //Patrick promjene
-            //Dohvati lobbyManager i uzmi objekt koji ima kartice igraca
-            LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); //Nije vise potrebno, neka ostane
-            GameObject playerCardsContainer = lobbyManager.playerContainer; //Nije vise potrebno, neka ostane
-            FindAndReparentDeadPlayer(playerCardsContainer.transform);
-            //End Patrick promjena
-            //
-
+                //
+                //Patrick promjene
+                //Dohvati lobbyManager i uzmi objekt koji ima kartice igraca
+                LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); //Nije vise potrebno, neka ostane
+                GameObject playerCardsContainer = lobbyManager.playerContainer; //Nije vise potrebno, neka ostane
+                FindAndReparentDeadPlayer(playerCardsContainer.transform);
+                //End Patrick promjena
+                //
+            }
             newspaperScreen.GetChild(child_index).gameObject.SetActive(true);
             news = newspaperScreen.GetChild(child_index).gameObject.GetComponent<NewspaperAnimation>();
             news.PlayAnimation();
             yield return new WaitForSeconds(newspaperDuration-news.duration);
             newspaperScreen.GetChild(child_index).gameObject.SetActive(false);
+            if (child_index == 1)
+            {
+                var dead_player = newspaperScreen.GetChild(1).transform.GetChild(0).transform.GetChild(0);
+                Debug.Log(dead_player.name+dead_player.transform.childCount.ToString());
+                int index = 0;
+                Color32 color = new Color32(101, 94, 94, 255); //indicator color for a dead player
+                for (int i = 1; i <= 7 && i < dead_player.childCount; i++)
+                {
+                    Debug.Log("Child component " + i.ToString() + dead_player.GetChild(i).name);
+                    var img = dead_player.GetChild(i).GetComponent<Image>();
+                    if (img != null) img.color = color;
+                }
+                dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
+            }
             newspaperScreen.gameObject.SetActive(false);
         }
         var panel = gameUI.transitionScreen.transform.GetChild(panelIndex);

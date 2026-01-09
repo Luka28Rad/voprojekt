@@ -120,6 +120,10 @@ public class LobbyManager : NetworkBehaviour
     {
         return playerModel;
     }
+    public Transform GetPlayerCardsContainer()
+    {
+        return playerCardsContainer;
+    }
     
     [ClientRpc] public void UIChangeClientRpc() // make all clients proceed to the correct UI
     {

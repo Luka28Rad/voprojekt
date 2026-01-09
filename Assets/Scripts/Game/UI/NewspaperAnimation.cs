@@ -4,6 +4,7 @@ using UnityEngine;
 public class NewspaperAnimation : MonoBehaviour
 {
     [SerializeField] private RectTransform newspaperRoot;
+    [SerializeField] private GameObject playerCardsContainer;
     [SerializeField] public float duration=1.0f;
     [SerializeField] private float startYoffset = -900f;
 
