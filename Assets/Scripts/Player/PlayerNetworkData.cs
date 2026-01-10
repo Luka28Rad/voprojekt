@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class PlayerNetworkData : NetworkBehaviour
 {
+    public NetworkVariable<bool> IsAlive = new NetworkVariable<bool>(true); // ako je igrac ziv onda je true
+    public NetworkVariable<ulong> NightTargetId = new NetworkVariable<ulong>(ulong.MaxValue);
+
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
     public NetworkVariable<int> TrainCart = new NetworkVariable<int>(0); // 0 = no assigned cart
     public NetworkVariable<int> hairBackIndex = new NetworkVariable<int>();
@@ -14,9 +17,7 @@ public class PlayerNetworkData : NetworkBehaviour
     public NetworkVariable<int> eyesIndex = new NetworkVariable<int>();
     public NetworkVariable<int> skinIndex = new NetworkVariable<int>();
     public NetworkVariable<int> outfitIndex = new NetworkVariable<int>();
-    public NetworkVariable<bool> dead = new NetworkVariable<bool>(false); //Ako je igrac izglasan van ili ubijen onda je true
     public PlayerRole MyRole { get; private set; } = PlayerRole.Unassigned;
-    public bool PlayerIsAlive { get; private set; } = true;
     public event Action<PlayerRole> OnRoleAssigned;
 
     public override void OnNetworkSpawn()
@@ -35,10 +36,27 @@ public class PlayerNetworkData : NetworkBehaviour
         PlayerName.OnValueChanged -= OnNameChanged;
     }
 
+    public bool CanInteractWith(PlayerNetworkData target)
+    {
+        if (!target) return false;
+        if (target == this && MyRole != PlayerRole.Doctor) return false;
+        if (!IsAlive.Value) return false;
+        if (!target.IsAlive.Value) return false;
+
+        return TrainCart.Value == target.TrainCart.Value;
+    }
+
     [ServerRpc]
     private void SetPlayerNameServerRpc(string name)
     {
         PlayerName.Value = name;
+    }
+    
+    [ServerRpc]
+    public void SetNightTargetServerRpc(ulong targetId)
+    {
+        NightTargetId.Value = targetId;
+        Debug.Log($"Server: Player {OwnerClientId} {MyRole} targeted Object {targetId}");
     }
 
     //Postavljanje indeksa u PlayerNetworkData kako bi skripta PlayerUIManager mogla uzeti te indekse
@@ -69,7 +87,13 @@ public class PlayerNetworkData : NetworkBehaviour
     public void SetRoleClientRpc(PlayerRole assignedRole, ClientRpcParams clientRpcParams = default)
     {
         MyRole = assignedRole;
-        Debug.Log($"My role is: {MyRole}");
+        Debug.Log($"-----My role is: {MyRole}");
         OnRoleAssigned?.Invoke(MyRole);
+    }
+
+    [ClientRpc]
+    public void ReceiveNotificationClientRpc(string message, ClientRpcParams rpcParams = default)
+    {
+        Debug.Log($"[GAME EVENT]: {message}");
     }
 }

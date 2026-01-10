@@ -36,7 +36,7 @@ public class VoteingUI : NetworkBehaviour
                 }
             }
             //Ako nije igrac mrtav napravi gumb za njega
-            if (!(playerData.dead.Value) && !(buttonExists))
+            if (playerData.IsAlive.Value && !(buttonExists))
             {
                 string playerName = playerData.PlayerName.Value.ToString();
                 ulong targetClientId = client.ClientId;
@@ -281,7 +281,7 @@ public class VoteingUI : NetworkBehaviour
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(result, out var client))
             {
                 var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
-                data.dead.Value = true;
+                data.IsAlive.Value = false;
             }
         }
 

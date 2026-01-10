@@ -84,9 +84,9 @@ public class LobbyManager : NetworkBehaviour
         {
             Instance = this;
             desc.Add(PlayerRole.Unassigned, "???");
-            desc.Add(PlayerRole.Villager, "Your average 9-5 worker trying to do his best in life. Help find killers and vote them out.");
-            desc.Add(PlayerRole.Doctor, "Your part of the elite. Help the poor by shielding them for one night from any attackers. You can't shield a person consecutively.");
-            desc.Add(PlayerRole.Investigator, "You have a new case, Columbo. You have to interogate people to find out on which side they are on.");
+            desc.Add(PlayerRole.Villager, "You're an average 9-5 worker trying to do his best in life. Help find killers and vote them out.");
+            desc.Add(PlayerRole.Doctor, "Help yourself or others by shielding them for one night from any attackers. You can't shield the same person twice in a row.");
+            desc.Add(PlayerRole.Investigator, "You have a new case, Sherlock. You have to interrogate people to find out on which side they are on.");
             desc.Add(PlayerRole.Impostor, "Its time to hunt! Kill all humans to get your sweet victory.");
             desc.Add(PlayerRole.ImpostorControl, "Its time to hunt! Control your fellows to make them kill others!");
             desc.Add(PlayerRole.Fool, "Huzzah! You are the king's entertainer! Get voted out to win and have the last laugh be yours.");
@@ -229,8 +229,9 @@ public class LobbyManager : NetworkBehaviour
             {
                 var edit = child.gameObject.GetComponent<EditPlayerLook>();
                 if (edit == null) continue;
+                if (!edit.networkData.IsAlive.Value) continue; 
                 int cart = edit.networkData.TrainCart.Value;
-                Debug.Log("child is in cart " + cart.ToString());
+                //Debug.Log("child is in cart " + cart.ToString());
                 if (cart == 0)
                     child.SetParent(playerCardsContainer, false);
                 else if (cart == 1)
@@ -450,6 +451,9 @@ public class LobbyManager : NetworkBehaviour
             var editLook = card.GetComponent<EditPlayerLook>();
             editLook.networkData = playerNetworkData;
             editLook.LinkClientId(client.ClientId);
+            
+            var playerInteractionButton = card.GetComponent<PlayerInteractionButton>();
+            playerInteractionButton.targetPlayer = playerNetworkData;
 
             // Pristupamo NetworkVariable<T> varijabli. ".Value" se koristi za čitanje sinkronizirane vrijednosti.
             // U ovom slučaju, čitamo ime igrača koje je sinkronizirano preko mreže.

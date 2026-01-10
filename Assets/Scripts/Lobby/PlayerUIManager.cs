@@ -40,9 +40,12 @@ public class PlayerUIManager : MonoBehaviour
     //Funkcija koja pronajde karticu od klijenta (specificno pronajde EditPlayerLook skriptu jer ima sve renderere u sebi)
     private EditPlayerLook FindCardOfOwner(ulong clientId){
         foreach (Transform child in playerCardsContainer){
-            var editLook = child.GetComponent<EditPlayerLook>();
-            if (editLook.linkedClientId == clientId){
-                return editLook;
+            if (child.GetComponent<EditPlayerLook>())
+            {
+                var editLook = child.GetComponent<EditPlayerLook>();
+                if (editLook.linkedClientId == clientId){
+                    return editLook;
+                }
             }
         }
         return null;

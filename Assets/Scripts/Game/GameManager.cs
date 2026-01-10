@@ -18,6 +18,7 @@ public enum PlayerRole
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public Dictionary<ulong, PlayerRole> ServerRoleMap = new Dictionary<ulong, PlayerRole>();
 
     private void Awake()
     {
@@ -44,10 +45,11 @@ public class GameManager : NetworkBehaviour
         Shuffle(playerIds);
 
         // Dicitonary za role
-        Dictionary<ulong, PlayerRole> assignedRoles = new Dictionary<ulong, PlayerRole>();
+        ServerRoleMap.Clear();
         
         // prvi je impostor, mozemo napraviti tu da se usporeduje kolko je igraca pa vidit jel ak je 5-7 igraca 1 impostor, 8+ su 2 itd
-        assignedRoles[playerIds[0]] = PlayerRole.Impostor;
+        // TODO
+        ServerRoleMap[playerIds[0]] = PlayerRole.Impostor;
 
         // Ostali su villageri i random role sa sansom
         for (int i = 1; i < playerIds.Count; i++)
@@ -55,20 +57,20 @@ public class GameManager : NetworkBehaviour
             float randomChance = Random.Range(0f, 1f);
             if (randomChance < 0.25f)
             {
-                assignedRoles[playerIds[i]] = PlayerRole.Investigator;
+                ServerRoleMap[playerIds[i]] = PlayerRole.Investigator;
             }
             else if (randomChance < 0.5f)
             {
-                assignedRoles[playerIds[i]] = PlayerRole.Doctor;
+                ServerRoleMap[playerIds[i]] = PlayerRole.Doctor;
             }
             else
             {
-                assignedRoles[playerIds[i]] = PlayerRole.Villager;
+                ServerRoleMap[playerIds[i]] = PlayerRole.Villager;
             }
         }
 
         // Salje role playerima privatno
-        foreach (var entry in assignedRoles)
+        foreach (var entry in ServerRoleMap)
         {
             ulong clientId = entry.Key;
             PlayerRole role = entry.Value;

@@ -34,7 +34,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         if (GameUI.dayTimeScreen.activeInHierarchy)
         {
-            Debug.Log("Dragging...");
+            //Debug.Log("Dragging...");
             rt.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }
     }
@@ -45,7 +45,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (GameUI.dayTimeScreen.activeInHierarchy)
         {
             canvasGroup.alpha = 1f;
-            Debug.Log("Ended Drag!");
+            //Debug.Log("Ended Drag!");
             if (!validDrop)
             {
                 rt.SetParent(ogParent);

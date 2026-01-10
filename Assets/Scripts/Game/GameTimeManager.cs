@@ -129,6 +129,13 @@ public class GameTimeManager : NetworkBehaviour
             yield return null;
         }
         NightTime.Value = 0;
+        
+        if (ActionResolutionSystem.Instance != null)
+        {
+            Debug.Log("Night ended. Resolving actions...");
+            ActionResolutionSystem.Instance.ResolveTurn();
+        }
+        
         DisableNightTimeTimerClientRpc();
         UIChangeClientRpc();
     }
@@ -157,6 +164,16 @@ public class GameTimeManager : NetworkBehaviour
             StopCoroutine(transitionRoutine);
         transitionRoutine = StartCoroutine(TransitionCountdown(panelIndex));
     }
+    
+    private bool CheckIfAnyoneDied()
+    {
+        if (ActionResolutionSystem.Instance != null)
+        {
+            return ActionResolutionSystem.Instance.LastNightVictims.Count > 0;
+        }
+        return false;
+    }
+    
     private IEnumerator TransitionCountdown(int panelIndex)
     {
         gameUI.timer.gameObject.SetActive(false);
@@ -169,19 +186,17 @@ public class GameTimeManager : NetworkBehaviour
             newspaperScreen.gameObject.SetActive(true);
             NewspaperAnimation news = null;
             int child_index = -1;
-            if (false) //nothing burger day
+            bool someoneDied = CheckIfAnyoneDied(); 
+            Debug.Log("Someone died: " + someoneDied);
+            if (!someoneDied) 
                 child_index = 0;
-            else //someone was killed
+            else 
             {
                 child_index = 1;
-                //
-                //Patrick promjene
-                //Dohvati lobbyManager i uzmi objekt koji ima kartice igraca
-                LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); //Nije vise potrebno, neka ostane
-                GameObject playerCardsContainer = lobbyManager.playerContainer; //Nije vise potrebno, neka ostane
+            
+                LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); 
+                GameObject playerCardsContainer = lobbyManager.playerContainer; 
                 FindAndReparentDeadPlayer(playerCardsContainer.transform);
-                //End Patrick promjena
-                //
             }
             newspaperScreen.GetChild(child_index).gameObject.SetActive(true);
             news = newspaperScreen.GetChild(child_index).gameObject.GetComponent<NewspaperAnimation>();
@@ -213,33 +228,84 @@ public class GameTimeManager : NetworkBehaviour
         panel.gameObject.SetActive(false);
         gameUI.transitionScreen.SetActive(false);
         gameUI.timer.gameObject.SetActive(true);
-        if (panelIndex == 0)
+        if (panelIndex == 0) // Ovo je night time
         {
-            int cart = lobby.GetPlayerModel().GetComponent<EditPlayerLook>().networkData.TrainCart.Value;
+            var localClient = NetworkManager.Singleton.LocalClient;
+            var localData = localClient.PlayerObject.GetComponent<PlayerNetworkData>();
+            int myCart = localData.TrainCart.Value;
+
             var bg_image = gameUI.nightTimeScreen.GetComponent<Image>();
             var armrest_image = gameUI.nightTimeScreen.transform.GetChild(0).GetComponent<Image>();
-            if (cart == 1)
-            {
-                bg_image.sprite = cart1;
-                armrest_image.sprite = armrest1;
-            }
-            else if (cart == 2)
-            {
-                bg_image.sprite = cart2;
-                armrest_image.sprite = armrest2;
-            }
-            else if (cart == 3)
-            {
-                bg_image.sprite = cart3;
-                armrest_image.sprite = armrest3;
-            }
+
+            if (myCart == 1) { bg_image.sprite = cart1; armrest_image.sprite = armrest1; }
+            else if (myCart == 2) { bg_image.sprite = cart2; armrest_image.sprite = armrest2; }
+            else if (myCart == 3) { bg_image.sprite = cart3; armrest_image.sprite = armrest3; }
             gameUI.nightTimeScreen.SetActive(true);
+            
+            Transform[] seatSlots = new Transform[3];
+            seatSlots[0] = gameUI.nightTimeScreen.transform.GetChild(1);
+            seatSlots[1] = gameUI.nightTimeScreen.transform.GetChild(2);
+            seatSlots[2] = gameUI.nightTimeScreen.transform.GetChild(3);
+            
+            EditPlayerLook[] allVisualCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Transform hiddenContainer = lobby.GetPlayerCardsContainer(); 
+            int currentSlotIndex = 0;
+            
+            foreach (var card in allVisualCards)
+            {
+                // Find the NetworkData associated with this card
+                PlayerNetworkData cardOwnerData = null;
+            
+                // Match the card's ClientID to a PlayerObject
+                if (NetworkManager.Singleton.ConnectedClients.TryGetValue(card.linkedClientId, out NetworkClient client))
+                {
+                    cardOwnerData = client.PlayerObject.GetComponent<PlayerNetworkData>();
+                }
+
+                if (cardOwnerData != null)
+                {
+                    bool isMe = card.linkedClientId == localClient.ClientId;
+                    bool isSameCart = cardOwnerData.TrainCart.Value == myCart;
+                    bool isAlive = cardOwnerData.IsAlive.Value;
+
+                    // If it is NOT me, IS in my cart, and IS alive -> Put in seat
+                    if (!isMe && isSameCart && isAlive && currentSlotIndex < 3)
+                    {
+                        card.transform.SetParent(seatSlots[currentSlotIndex], false);
+                        card.transform.localPosition = Vector3.zero;
+                        card.transform.localScale = Vector3.one; // Ensure scale is correct
+                        card.enabled = true;
+                        // Enable interaction button on this card (if you have one)
+                        // card.EnableInteractionButton(true); 
+                    
+                        currentSlotIndex++;
+                    }
+                    else if (!isMe)
+                    {
+                        // Hide players not in my cart / dead players / or if slots are full
+                        // Move them to the generic lobby container so they aren't visible
+                        card.transform.SetParent(hiddenContainer, false);
+                    }
+                    // If isMe == true, we usually don't show our own card on screen, 
+                    // or we leave it in the default container.
+                }
+            }
+            
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 StartNightTimeTimer();
         }
         else if (panelIndex == 1)
         { 
             gameUI.dayTimeScreen.SetActive(true);
+            
+            EditPlayerLook[] allVisualCards = FindObjectsOfType<EditPlayerLook>();
+            Transform mainContainer = lobby.GetPlayerCardsContainer();
+            foreach(var card in allVisualCards)
+            {
+                card.transform.SetParent(mainContainer, false);
+            }
+
+            
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 StartDayTimeTimer();
         }
@@ -250,28 +316,33 @@ public class GameTimeManager : NetworkBehaviour
     //uzme prvog od tih kojeg najde
     private void FindAndReparentDeadPlayer(Transform parent)
     {
-        EditPlayerLook[] allCards = FindObjectsOfType<EditPlayerLook>(true);
+        if (ActionResolutionSystem.Instance == null) return;
 
-        foreach (var card in allCards)
+        foreach (ulong deadId in ActionResolutionSystem.Instance.LastNightVictims)
         {
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            EditPlayerLook[] allCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var card in allCards)
             {
-                var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
-                if (card.linkedClientId == client.ClientId && data.dead.Value)
+                if (card.linkedClientId == deadId)
                 {
-                    Transform deadParent = gameUI.transitionScreen.transform;
-
-                   //Ovo dojde do onog elementa gdje se nalazi kao mjesto na novinama za mrtvog igraca
-                    for (int i = 0; i < 3; i++)
+                    foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
                     {
-                        deadParent = deadParent.GetChild(deadParent.childCount - 1);
-                    }
+                        var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+                        if (card.linkedClientId == client.ClientId && !data.IsAlive.Value)
+                        {
+                            Transform deadParent = gameUI.transitionScreen.transform;
 
-                    //Reparenta karticu
-                    card.transform.SetParent(deadParent, false);
-                    card.transform.localPosition = Vector3.zero;
-                    card.transform.SetAsLastSibling();
-                    return;
+                            for (int i = 0; i < 3; i++)
+                            {
+                                deadParent = deadParent.GetChild(deadParent.childCount - 1);
+                            }
+
+                            card.transform.SetParent(deadParent, false);
+                            card.transform.localPosition = Vector3.zero;
+                            card.transform.SetAsLastSibling();
+                            return;
+                        }
+                    }
                 }
             }
         }
