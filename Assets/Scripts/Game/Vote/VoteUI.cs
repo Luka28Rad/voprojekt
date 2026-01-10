@@ -15,6 +15,7 @@ public class VoteingUI : NetworkBehaviour
     public Sprite selectCircle;
     public Sprite confirmCircle;
 
+    [SerializeField] LobbyManager lobby;
     private Dictionary<ulong, ulong> votes = new Dictionary<ulong, ulong>(); //Zaa drzanje tko je za koga glasao clinetId -> clinetID igraca za kojeg glasa
     private ulong selectedTargetClientId = ulong.MaxValue;
     private Button selectedButton = null;
@@ -304,6 +305,56 @@ public class VoteingUI : NetworkBehaviour
         votes.Clear();
         ClearVote();
         ClearButtons();
+    }
+    
+    public bool[] CheckWinCondition()
+    {
+        int noAliveImpostors = 0;
+        int noAliveGoodGuys = 0;
+        int noPlayers = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().noPlayers.Value;
+        var role = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().MyRole;
+        bool is_impostor = (role == PlayerRole.Impostor || role == PlayerRole.ImpostorControl) ? true : false;
+        bool[] results = new bool[2]; // [game_ended, has_won]
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var client_role = client.PlayerObject.GetComponent<PlayerNetworkData>().MyRole;
+            var client_alive = client.PlayerObject.GetComponent<PlayerNetworkData>().IsAlive.Value;
+            if ((client_role == PlayerRole.Impostor || client_role == PlayerRole.ImpostorControl) && client_alive)
+                noAliveImpostors += 1;
+            else if ((client_role != PlayerRole.Impostor && client_role != PlayerRole.ImpostorControl) && client_alive)
+                noAliveGoodGuys += 1;
+        }
+        Debug.Log("Alive impostors: "+noAliveImpostors.ToString());
+        Debug.Log("Alive good guys: " + noAliveGoodGuys.ToString());
+        Debug.Log("Is impostor?: " + is_impostor.ToString());
+        Debug.Log("Is alive?: " + NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().IsAlive.Value);
+
+        if(noAliveImpostors == 0)
+        {
+            results[0] = true;
+            if (is_impostor)
+                results[1] = false;
+            else
+                results[1] = true;
+        }
+        else
+        {
+            if(noAliveImpostors >= noAliveGoodGuys)
+            {
+                results[0] = true;
+                if (is_impostor)
+                    results[1] = true;
+                else
+                    results[1] = false;
+            }
+            else
+            {
+                results[0] = false;
+                results[1] = false;
+            }
+        }
+        return results;
     }
 
 

@@ -8,7 +8,8 @@ public class PlayerNetworkData : NetworkBehaviour
 {
     public NetworkVariable<bool> IsAlive = new NetworkVariable<bool>(true); // ako je igrac ziv onda je true
     public NetworkVariable<ulong> NightTargetId = new NetworkVariable<ulong>(ulong.MaxValue);
-
+    public NetworkVariable<int> noPlayers = new NetworkVariable<int>(0);
+    public NetworkVariable<bool> hasWon = new NetworkVariable<bool>(false);
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
     public NetworkVariable<int> TrainCart = new NetworkVariable<int>(0); // 0 = no assigned cart
     public NetworkVariable<int> hairBackIndex = new NetworkVariable<int>();

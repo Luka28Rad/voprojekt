@@ -100,12 +100,13 @@ public class GameUI : MonoBehaviour
         else if (nightTimeScreen.activeInHierarchy)
         {
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer) lobby.ResetLocationClientRpc();
+            bool[] stats = voteUI.CheckWinCondition();
             // 2 cases: game continues = cycle to day, game ends = cycle to game over screen
-            if (false)
+            if (stats[0])
             {
                 //end the game
-                nightTimeScreen.SetActive(false);
-                if(NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().hasWon.Value = true;
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                     lobby.UIChangeClientRpc();
             }
             else
@@ -129,20 +130,12 @@ public class GameUI : MonoBehaviour
 
     public void OpenVotingMenu()
     {
-        RectTransform rect = timer.GetComponent<RectTransform>();
-        Vector2 pos = rect.anchoredPosition;
-        pos.y *= -1;
-        rect.anchoredPosition = pos; 
         votingScreen.SetActive(true);
         voteUI.OpenVotingPanel();
         votingMenuButton.interactable = false;
     }
     public void CloseVotingMenu()
     {
-        RectTransform rect = timer.GetComponent<RectTransform>();
-        Vector2 pos = rect.anchoredPosition;
-        pos.y *= -1;
-        rect.anchoredPosition = pos;
         votingScreen.SetActive(false);
         voteUI.CloseVotingPanel();
         votingMenuButton.interactable = true;
@@ -155,6 +148,7 @@ public class GameUI : MonoBehaviour
     {
 
     }
+
 
     private IEnumerator ResolveVotesFlow()
     {
@@ -174,66 +168,16 @@ public class GameUI : MonoBehaviour
             votingMenuButton.interactable = true;
             voteUI.ClearButtons();
         }
-
-        ToggleTransition(0);
+        
+        bool[] stats = voteUI.CheckWinCondition();
+        if (stats[0])
+        {
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().hasWon.Value = true;
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                lobby.UIChangeClientRpc();
+        }
+        else
+            ToggleTransition(0);
     }
 
 }
-
-
-
-
-#region Previous code
-/*
-    [SerializeField] private TMP_Text roleDisplayText;
-
-    private void OnEnable()
-    {
-        if (NetworkManager.Singleton.LocalClient?.PlayerObject != null)
-        {
-            SubscribeToRoleEvent();
-        }
-        else
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClient?.PlayerObject != null)
-        {
-            var localPlayerData = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
-            if (localPlayerData != null)
-            {
-                localPlayerData.OnRoleAssigned -= DisplayRole;
-            }
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-        }
-    }
-
-    private void OnClientConnected(ulong clientId)
-    {
-        if (clientId == NetworkManager.Singleton.LocalClientId)
-        {
-            SubscribeToRoleEvent();
-        }
-    }
-
-    private void SubscribeToRoleEvent()
-    {
-        var localPlayerData = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>();
-        localPlayerData.OnRoleAssigned += DisplayRole;
-
-        if (localPlayerData.MyRole != PlayerRole.Unassigned)
-        {
-            DisplayRole(localPlayerData.MyRole);
-        }
-    }
-
-    private void DisplayRole(PlayerRole role)
-    {
-        roleDisplayText.text = $"Your Role: {role}";
-    }
-    */
-#endregion

@@ -133,7 +133,7 @@ public class LobbyManager : NetworkBehaviour
             waitingRoomScreen.SetActive(false);
             playerCardsContainer.gameObject.SetActive(true); //Make player cards appear
             lobbyScreen.SetActive(true);
-            
+            playerModel.GetComponent<EditPlayerLook>().networkData.noPlayers.Value = NetworkManager.Singleton.ConnectedClientsList.Count();
         }
         else if (lobbyScreen.activeInHierarchy)
         {
@@ -154,7 +154,7 @@ public class LobbyManager : NetworkBehaviour
             rt.offsetMin += new Vector2(0f, -80f);
             rt.offsetMax += new Vector2(0f, -80f);
             GridLayoutGroup grid = playerCardsContainer.GetComponent<GridLayoutGroup>();
-            int no_players = NetworkManager.Singleton.ConnectedClientsList.Count;
+            int no_players = playerModel.GetComponent<EditPlayerLook>().networkData.noPlayers.Value;
             cart1_active.SetActive(true);
             if (no_players > 4)
             {
@@ -192,6 +192,19 @@ public class LobbyManager : NetworkBehaviour
         {
             Debug.Log("Clients: changing from game screen to game over screen");
             gameScreen.SetActive(false);
+            
+            bool hasWon = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().hasWon.Value;
+            if (hasWon)
+            {
+                gameOverText.text = "YOU WON!";
+                gameOverText.color = Color.green;
+            }
+            else
+            {
+                gameOverText.text = "YOU LOST!";
+                gameOverText.color = Color.red;
+            }
+
             gameOverScreen.SetActive(true);
             if (IsHost)
             {
@@ -204,6 +217,7 @@ public class LobbyManager : NetworkBehaviour
         else if (gameOverScreen.activeInHierarchy)
         {
             Debug.Log("Clients: changing from game over screen back to waiting room");
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().hasWon.Value = false;
             gameOverScreen.SetActive(false);
             waitingRoomScreen.SetActive(true);
         }
