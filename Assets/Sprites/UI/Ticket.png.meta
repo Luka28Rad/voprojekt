@@ -116,13 +116,13 @@ TextureImporter:
       name: Ticket_0
       rect:
         serializedVersion: 2
-        x: 6
+        x: 7
         y: 0
-        width: 52
-        height: 93
+        width: 50
+        height: 71
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 23}
       customData: 
       outline: []
       physicsShape: []
@@ -134,11 +134,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Ticket_1
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 70
+        width: 50
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 208c9691a9ce37b449586911164bc856
+      internalID: 210503525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 4b7da22cd4af00941ac6a7eab3572624
+    spriteID: e4aae6c72f4104042be53f3f35a45df6
     internalID: 0
     vertices: []
     indices: 
@@ -149,7 +171,7 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       Ticket_0: -6467537029916428044
-      Ticket_1: 319035214
+      Ticket_1: 210503525
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

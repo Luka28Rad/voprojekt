@@ -111,6 +111,16 @@ public class GameUI : MonoBehaviour
             else
             {
                 // continue the game
+                for(int i = 1; i < 4; i++)
+                {
+                    var cart_seat = nightTimeScreen.transform.GetChild(i);
+                    if (cart_seat.childCount == 1)
+                    {
+                        var playerCard = cart_seat.GetChild(0);
+                        var playerCardsContainer = lobby.GetPlayerCardsContainer();
+                        playerCard.SetParent(playerCardsContainer,false);
+                    }
+                }
                 nightTimeScreen.SetActive(false);
                 ToggleTransition(1);
             }

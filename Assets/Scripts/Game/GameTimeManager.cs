@@ -217,8 +217,8 @@ public class GameTimeManager : NetworkBehaviour
                     var img = dead_player.GetChild(i).GetComponent<Image>();
                     if (img != null) img.color = color;
                 }
-                dead_player.GetChild(1).GetComponent<TMP_Text>().text = "<s>" + dead_player.GetChild(1).GetComponent<TMP_Text>().text + "</s>";
-                dead_player.SetParent(lobby.GetPlayerCardsContainer(), false);
+                dead_player.GetChild(1).GetComponent<TMP_Text>().text = "<s>"+dead_player.GetChild(1).GetComponent<TMP_Text>().text+"</s>";
+                dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
             }
             newspaperScreen.gameObject.SetActive(false);
 
@@ -234,7 +234,7 @@ public class GameTimeManager : NetworkBehaviour
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 StartDayTimeTimer();
         }
-        else if (panelIndex == 0) // Ovo je night time
+        else if(panelIndex == 0) // Ovo je night time
         {
             var localClient = NetworkManager.Singleton.LocalClient;
             var localData = localClient.PlayerObject.GetComponent<PlayerNetworkData>();
@@ -304,7 +304,7 @@ public class GameTimeManager : NetworkBehaviour
         panel.gameObject.SetActive(true);
         var train = panel.GetChild(1).GetComponent<TrainAnimation>();
         train.PlayAnimation();
-        yield return new WaitForSeconds(transitionDuration - train.duration);
+        yield return new WaitForSeconds(transitionDuration-train.duration);
         panel.gameObject.SetActive(false);
         gameUI.transitionScreen.SetActive(false);
         gameUI.timer.gameObject.SetActive(true);
