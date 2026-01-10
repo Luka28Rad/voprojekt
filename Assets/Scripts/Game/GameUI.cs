@@ -1,6 +1,7 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections;
 
 public class GameUI : MonoBehaviour
 {
@@ -94,18 +95,7 @@ public class GameUI : MonoBehaviour
     {
         if (dayTimeScreen.activeInHierarchy)
         {
-            dayTimeScreen.SetActive(false);
-            if (votingScreen.activeInHierarchy)
-            {
-                votingScreen.SetActive(false);
-                RectTransform rect = timer.GetComponent<RectTransform>();
-                Vector2 pos = new Vector2(150f,-100f); //hardcoded = bad
-                votingMenuButton.interactable = true;
-                voteUI.ClearButtons();
-                rect.anchoredPosition = pos;
-            }
-            voteUI.ResolveVotes();
-            ToggleTransition(0);
+            StartCoroutine(ResolveVotesFlow());
         }
         else if (nightTimeScreen.activeInHierarchy)
         {
@@ -165,6 +155,29 @@ public class GameUI : MonoBehaviour
     {
 
     }
+
+    private IEnumerator ResolveVotesFlow()
+    {
+        voteUI.ResolveVotes();
+
+        yield return new WaitForSeconds(gameTimeManager.voteResultTime);
+        voteUI.voteTexts.SetActive(false);
+        dayTimeScreen.SetActive(false);
+
+        if (votingScreen.activeInHierarchy)
+        {
+            votingScreen.SetActive(false);
+
+            RectTransform rect = timer.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(150f, -100f);
+
+            votingMenuButton.interactable = true;
+            voteUI.ClearButtons();
+        }
+
+        ToggleTransition(0);
+    }
+
 }
 
 
