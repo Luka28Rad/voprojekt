@@ -1,7 +1,9 @@
 using NUnit.Framework.Constraints;
 using System.Collections;
+using System.Linq;
 using System.Threading;
 using TMPro;
+using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager;
@@ -38,6 +40,7 @@ public class GameTimeManager : NetworkBehaviour
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
     );
+    [SerializeField] public float voteResultTime;
     [SerializeField] private float roleShowcaseDuration;
     [SerializeField] private float dayTimeDuration;
     [SerializeField] private float nightTimeDuration;
@@ -173,7 +176,7 @@ public class GameTimeManager : NetworkBehaviour
         }
         return false;
     }
-    
+
     private IEnumerator TransitionCountdown(int panelIndex)
     {
         gameUI.timer.gameObject.SetActive(false);
@@ -186,49 +189,52 @@ public class GameTimeManager : NetworkBehaviour
             newspaperScreen.gameObject.SetActive(true);
             NewspaperAnimation news = null;
             int child_index = -1;
-            bool someoneDied = CheckIfAnyoneDied(); 
+            bool someoneDied = CheckIfAnyoneDied();
             Debug.Log("Someone died: " + someoneDied);
-            if (!someoneDied) 
+            if (!someoneDied)
                 child_index = 0;
-            else 
+            else
             {
                 child_index = 1;
-            
-                LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); 
-                GameObject playerCardsContainer = lobbyManager.playerContainer; 
-                FindAndReparentDeadPlayer(playerCardsContainer.transform);
+                //LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); 
+                //GameObject playerCardsContainer = lobbyManager.playerContainer; 
+                FindAndReparentDeadPlayer();
             }
             newspaperScreen.GetChild(child_index).gameObject.SetActive(true);
             news = newspaperScreen.GetChild(child_index).gameObject.GetComponent<NewspaperAnimation>();
             news.PlayAnimation();
-            yield return new WaitForSeconds(newspaperDuration-news.duration);
+            yield return new WaitForSeconds(newspaperDuration - news.duration);
             newspaperScreen.GetChild(child_index).gameObject.SetActive(false);
             if (child_index == 1)
             {
                 var dead_player = newspaperScreen.GetChild(1).transform.GetChild(0).transform.GetChild(0);
-                Debug.Log(dead_player.name+dead_player.transform.childCount.ToString());
+                Debug.Log(dead_player.name + dead_player.transform.childCount.ToString());
                 int index = 0;
                 Color32 color = new Color32(0, 0, 0, 255); //indicator color for a dead player
-                for (int i = 1; i <= 7 && i < dead_player.childCount; i++)
+                for (int i = 2; i <= 8 && i < dead_player.childCount; i++)
                 {
                     Debug.Log("Child component " + i.ToString() + dead_player.GetChild(i).name);
                     var img = dead_player.GetChild(i).GetComponent<Image>();
                     if (img != null) img.color = color;
                 }
-                dead_player.GetChild(0).GetComponent<TMP_Text>().text = "<s>"+dead_player.GetChild(0).GetComponent<TMP_Text>().text+"</s>";
-                dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
+                dead_player.GetChild(1).GetComponent<TMP_Text>().text = "<s>" + dead_player.GetChild(1).GetComponent<TMP_Text>().text + "</s>";
+                dead_player.SetParent(lobby.GetPlayerCardsContainer(), false);
             }
             newspaperScreen.gameObject.SetActive(false);
+
+
+            EditPlayerLook[] allVisualCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Transform mainContainer = lobby.GetPlayerCardsContainer();
+            foreach (var card in allVisualCards)
+            {
+                if (!(card.linkedClientId == NetworkManager.Singleton.LocalClientId))
+                    card.transform.SetParent(mainContainer, false);
+            }
+            gameUI.dayTimeScreen.SetActive(true);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                StartDayTimeTimer();
         }
-        var panel = gameUI.transitionScreen.transform.GetChild(panelIndex);
-        panel.gameObject.SetActive(true);
-        var train = panel.GetChild(1).GetComponent<TrainAnimation>();
-        train.PlayAnimation();
-        yield return new WaitForSeconds(transitionDuration-train.duration);
-        panel.gameObject.SetActive(false);
-        gameUI.transitionScreen.SetActive(false);
-        gameUI.timer.gameObject.SetActive(true);
-        if (panelIndex == 0) // Ovo je night time
+        else if (panelIndex == 0) // Ovo je night time
         {
             var localClient = NetworkManager.Singleton.LocalClient;
             var localData = localClient.PlayerObject.GetComponent<PlayerNetworkData>();
@@ -241,21 +247,21 @@ public class GameTimeManager : NetworkBehaviour
             else if (myCart == 2) { bg_image.sprite = cart2; armrest_image.sprite = armrest2; }
             else if (myCart == 3) { bg_image.sprite = cart3; armrest_image.sprite = armrest3; }
             gameUI.nightTimeScreen.SetActive(true);
-            
+
             Transform[] seatSlots = new Transform[3];
             seatSlots[0] = gameUI.nightTimeScreen.transform.GetChild(1);
             seatSlots[1] = gameUI.nightTimeScreen.transform.GetChild(2);
             seatSlots[2] = gameUI.nightTimeScreen.transform.GetChild(3);
-            
+
             EditPlayerLook[] allVisualCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            Transform hiddenContainer = lobby.GetPlayerCardsContainer(); 
+            Transform hiddenContainer = lobby.GetPlayerCardsContainer();
             int currentSlotIndex = 0;
-            
+
             foreach (var card in allVisualCards)
             {
                 // Find the NetworkData associated with this card
                 PlayerNetworkData cardOwnerData = null;
-            
+
                 // Match the card's ClientID to a PlayerObject
                 if (NetworkManager.Singleton.ConnectedClients.TryGetValue(card.linkedClientId, out NetworkClient client))
                 {
@@ -277,7 +283,7 @@ public class GameTimeManager : NetworkBehaviour
                         card.enabled = true;
                         // Enable interaction button on this card (if you have one)
                         // card.EnableInteractionButton(true); 
-                    
+
                         currentSlotIndex++;
                     }
                     else if (!isMe)
@@ -290,59 +296,50 @@ public class GameTimeManager : NetworkBehaviour
                     // or we leave it in the default container.
                 }
             }
-            
+
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 StartNightTimeTimer();
         }
-        else if (panelIndex == 1)
-        { 
-            gameUI.dayTimeScreen.SetActive(true);
-            
-            EditPlayerLook[] allVisualCards = FindObjectsOfType<EditPlayerLook>();
-            Transform mainContainer = lobby.GetPlayerCardsContainer();
-            foreach(var card in allVisualCards)
-            {
-                card.transform.SetParent(mainContainer, false);
-            }
-
-            
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-                StartDayTimeTimer();
-        }
+        var panel = gameUI.transitionScreen.transform.GetChild(panelIndex);
+        panel.gameObject.SetActive(true);
+        var train = panel.GetChild(1).GetComponent<TrainAnimation>();
+        train.PlayAnimation();
+        yield return new WaitForSeconds(transitionDuration - train.duration);
+        panel.gameObject.SetActive(false);
+        gameUI.transitionScreen.SetActive(false);
+        gameUI.timer.gameObject.SetActive(true);
         transitionRoutine = null;
     }
 
     //Ovo za sada dohvati prvog u listi kojeg najde da ima dead = true, kada dodamo onaj kao stog ili sto vec sa svim mrtvima treba promjeniti da
     //uzme prvog od tih kojeg najde
-    private void FindAndReparentDeadPlayer(Transform parent)
+    private void FindAndReparentDeadPlayer()
     {
         if (ActionResolutionSystem.Instance == null) return;
+        EditPlayerLook[] allCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-        foreach (ulong deadId in ActionResolutionSystem.Instance.LastNightVictims)
+        foreach (ulong deadNetworkObjectId in ActionResolutionSystem.Instance.LastNightVictims)
         {
-            EditPlayerLook[] allCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var card in allCards)
             {
-                if (card.linkedClientId == deadId)
+                if (card.networkData == null) continue;
+
+                if (card.networkData.NetworkObjectId == deadNetworkObjectId)
                 {
-                    foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+                    Transform deadParent = gameUI.transitionScreen.transform;
+
+                    for (int i = 0; i < 3; i++)
                     {
-                        var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
-                        if (card.linkedClientId == client.ClientId && !data.IsAlive.Value)
-                        {
-                            Transform deadParent = gameUI.transitionScreen.transform;
-
-                            for (int i = 0; i < 3; i++)
-                            {
-                                deadParent = deadParent.GetChild(deadParent.childCount - 1);
-                            }
-
-                            card.transform.SetParent(deadParent, false);
-                            card.transform.localPosition = Vector3.zero;
-                            card.transform.SetAsLastSibling();
-                            return;
-                        }
+                        if (deadParent.childCount > 0)
+                            deadParent = deadParent.GetChild(deadParent.childCount - 1);
                     }
+
+                    card.transform.SetParent(deadParent, false);
+                    card.transform.localPosition = Vector3.zero;
+                    card.transform.localScale = Vector3.one;
+                    card.transform.SetAsLastSibling();
+
+                    return;
                 }
             }
         }
