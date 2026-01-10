@@ -219,15 +219,13 @@ public class GameTimeManager : NetworkBehaviour
                 dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
             }
             newspaperScreen.gameObject.SetActive(false);
-            
 
-            EditPlayerLook[] allVisualCards = FindObjectsOfType<EditPlayerLook>();
+
+            EditPlayerLook[] allVisualCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             Transform mainContainer = lobby.GetPlayerCardsContainer();
             foreach (var card in allVisualCards)
             {
-                if (card.linkedClientId == NetworkManager.Singleton.LocalClientId)
-                    card.transform.SetParent(lobby.playerContainer.transform, false);
-                else
+                if (!(card.linkedClientId == NetworkManager.Singleton.LocalClientId))
                     card.transform.SetParent(mainContainer, false);
             }
             gameUI.dayTimeScreen.SetActive(true);
