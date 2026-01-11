@@ -320,6 +320,7 @@ public class VoteingUI : NetworkBehaviour
         {
             var client_role = client.PlayerObject.GetComponent<PlayerNetworkData>().MyRole;
             var client_alive = client.PlayerObject.GetComponent<PlayerNetworkData>().IsAlive.Value;
+            Debug.Log(client_role.ToString());
             if ((client_role == PlayerRole.Impostor || client_role == PlayerRole.ImpostorControl) && client_alive)
                 noAliveImpostors += 1;
             else if ((client_role != PlayerRole.Impostor && client_role != PlayerRole.ImpostorControl) && client_alive)

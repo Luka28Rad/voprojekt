@@ -2,6 +2,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class GameUI : MonoBehaviour
 {
@@ -93,6 +94,7 @@ public class GameUI : MonoBehaviour
     }
     public void UIChange() // make all clients proceed to the correct UI
     {
+        Debug.Log("HELLO!");
         if (dayTimeScreen.activeInHierarchy)
         {
             StartCoroutine(ResolveVotesFlow());
@@ -105,7 +107,7 @@ public class GameUI : MonoBehaviour
             if (stats[0])
             {
                 //end the game
-                NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().hasWon.Value = true;
+                NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().SetHasWonServerRpc(true);
                 if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                     lobby.UIChangeClientRpc();
             }
@@ -152,6 +154,7 @@ public class GameUI : MonoBehaviour
 
     private IEnumerator ResolveVotesFlow()
     {
+        Debug.Log("ROLE: " + NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().MyRole);
         voteUI.ResolveVotes();
 
         yield return new WaitForSeconds(gameTimeManager.voteResultTime);
@@ -172,7 +175,7 @@ public class GameUI : MonoBehaviour
         bool[] stats = voteUI.CheckWinCondition();
         if (stats[0])
         {
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().hasWon.Value = true;
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().SetHasWonServerRpc(true);
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 lobby.UIChangeClientRpc();
         }
