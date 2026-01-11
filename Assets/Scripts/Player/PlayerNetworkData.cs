@@ -75,6 +75,11 @@ public class PlayerNetworkData : NetworkBehaviour
     {
         TrainCart.Value = cart;
     }
+    [ServerRpc]
+    public void SetHasWonServerRpc(bool won)
+    {
+        hasWon.Value = won;
+    }
 
     private void OnNameChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
     {
