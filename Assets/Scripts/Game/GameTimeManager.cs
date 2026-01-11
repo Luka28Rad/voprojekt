@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Threading;
 using TMPro;
+using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager;
@@ -39,6 +40,7 @@ public class GameTimeManager : NetworkBehaviour
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
     );
+    [SerializeField] public float voteResultTime;
     [SerializeField] private float roleShowcaseDuration;
     [SerializeField] private float dayTimeDuration;
     [SerializeField] private float nightTimeDuration;
@@ -174,7 +176,7 @@ public class GameTimeManager : NetworkBehaviour
         }
         return false;
     }
-    
+
     private IEnumerator TransitionCountdown(int panelIndex)
     {
         gameUI.timer.gameObject.SetActive(false);
@@ -187,11 +189,11 @@ public class GameTimeManager : NetworkBehaviour
             newspaperScreen.gameObject.SetActive(true);
             NewspaperAnimation news = null;
             int child_index = -1;
-            bool someoneDied = CheckIfAnyoneDied(); 
+            bool someoneDied = CheckIfAnyoneDied();
             Debug.Log("Someone died: " + someoneDied);
-            if (!someoneDied) 
+            if (!someoneDied)
                 child_index = 0;
-            else 
+            else
             {
                 child_index = 1;
                 //LobbyManager lobbyManager = FindObjectOfType<LobbyManager>(); 
@@ -201,12 +203,12 @@ public class GameTimeManager : NetworkBehaviour
             newspaperScreen.GetChild(child_index).gameObject.SetActive(true);
             news = newspaperScreen.GetChild(child_index).gameObject.GetComponent<NewspaperAnimation>();
             news.PlayAnimation();
-            yield return new WaitForSeconds(newspaperDuration-news.duration);
+            yield return new WaitForSeconds(newspaperDuration - news.duration);
             newspaperScreen.GetChild(child_index).gameObject.SetActive(false);
             if (child_index == 1)
             {
                 var dead_player = newspaperScreen.GetChild(1).transform.GetChild(0).transform.GetChild(0);
-                Debug.Log(dead_player.name+dead_player.transform.childCount.ToString());
+                Debug.Log(dead_player.name + dead_player.transform.childCount.ToString());
                 int index = 0;
                 Color32 color = new Color32(0, 0, 0, 255); //indicator color for a dead player
                 for (int i = 2; i <= 8 && i < dead_player.childCount; i++)
@@ -219,15 +221,13 @@ public class GameTimeManager : NetworkBehaviour
                 dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
             }
             newspaperScreen.gameObject.SetActive(false);
-            
 
-            EditPlayerLook[] allVisualCards = FindObjectsOfType<EditPlayerLook>();
+
+            EditPlayerLook[] allVisualCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             Transform mainContainer = lobby.GetPlayerCardsContainer();
             foreach (var card in allVisualCards)
             {
-                if (card.linkedClientId == NetworkManager.Singleton.LocalClientId)
-                    card.transform.SetParent(lobby.playerContainer.transform, false);
-                else
+                if (!(card.linkedClientId == NetworkManager.Singleton.LocalClientId))
                     card.transform.SetParent(mainContainer, false);
             }
             gameUI.dayTimeScreen.SetActive(true);

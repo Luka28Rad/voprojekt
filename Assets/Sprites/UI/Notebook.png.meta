@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e7caea9d2fce77e4686ab8158acfc562
+guid: 955aeff45ef6106419ee7fd8101ee554
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2500059944288276249
-    second: VoteButton_0
+      213: -8006958544109390896
+    second: Notebook_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -101,7 +101,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,45 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: VoteButton_0
+      name: Notebook_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 24
         y: 0
-        width: 74
-        height: 80
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7e0b38ff9b00e4dd0800000000000000
-      internalID: -2500059944288276249
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: VoteButton_1
-      rect:
-        serializedVersion: 2
-        x: 14
-        y: 41
-        width: 45
-        height: 19
+        width: 208
+        height: 127
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 0c203ceed666d6a4e868092dbce7d30b
-      internalID: -1617371824
+      spriteID: 0d3b41770a191e090800000000000000
+      internalID: -8006958544109390896
       vertices: []
       indices: 
       edges: []
@@ -160,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 52286faacb8829041b74054ffadde440
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -170,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      VoteButton_0: -2500059944288276249
-      VoteButton_1: -1617371824
+      Notebook_0: -8006958544109390896
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

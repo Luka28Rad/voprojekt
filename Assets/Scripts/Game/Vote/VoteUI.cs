@@ -4,13 +4,18 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class VoteingUI : NetworkBehaviour
 {
     [Header("UI")]
     public Transform playerListParent; //Objekt koji drzi gumbe
     public GameObject voteButtonPrefab; //Prefab za gumb
+    public GameObject voteTexts;
+    public Sprite selectCircle;
+    public Sprite confirmCircle;
 
+    [SerializeField] LobbyManager lobby;
     private Dictionary<ulong, ulong> votes = new Dictionary<ulong, ulong>(); //Zaa drzanje tko je za koga glasao clinetId -> clinetID igraca za kojeg glasa
     private ulong selectedTargetClientId = ulong.MaxValue;
     private Button selectedButton = null;
@@ -76,7 +81,7 @@ public class VoteingUI : NetworkBehaviour
         }); //Kada se klikne na taj gumb onda se glasa za igracem sa specificiranim ClinetId
         if (votes.TryGetValue(NetworkManager.Singleton.LocalClientId, out ulong votedFor) && votedFor == targetClientId)
         {
-            button.image.color = Color.red;
+            button.image.sprite = confirmCircle;
             confirmedButton = button;
         }
     }
@@ -85,13 +90,15 @@ public class VoteingUI : NetworkBehaviour
     {
         if (selectedButton != null && selectedButton != confirmedButton)
         {
-            selectedButton.image.color = Color.white;
+            selectedButton.image.sprite = null;
+            selectedButton.image.color = new Color(1f, 1f, 1f, 0f);
         }
         selectedTargetClientId = targetClientId;
         selectedButton = button;
         if (selectedButton != confirmedButton)
         {
-            button.image.color = Color.yellow;
+            button.image.sprite = selectCircle;
+            button.image.color = new Color(1f, 1f, 1f, 1f);
         }
         Debug.Log($"Selected vote target: {targetClientId}");
     }
@@ -100,7 +107,8 @@ public class VoteingUI : NetworkBehaviour
     {
         if (selectedButton != null)
         {
-            selectedButton.image.color = Color.white;
+            selectedButton.image.sprite = null;
+            selectedButton.image.color = new Color(1f, 1f, 1f, 0f);
             selectedButton = null;
         }
         selectedTargetClientId = ulong.MaxValue;
@@ -122,12 +130,14 @@ public class VoteingUI : NetworkBehaviour
 
             //Resetiraj prethodni confirmed gumb
             if (confirmedButton != null){
-                confirmedButton.image.color = Color.white;
+                confirmedButton.image.sprite = null;
+                confirmedButton.image.color = new Color(1f, 1f, 1f, 0f);
             }
 
             //Postavi novi confirmed
             confirmedButton = selectedButton;
-            confirmedButton.image.color = Color.red;
+            confirmedButton.image.sprite = confirmCircle;
+            confirmedButton.image.color = new Color(1f, 1f, 1f, 1f);
 
             selectedButton = null; //Resetiraj selekciju
         }
@@ -147,16 +157,19 @@ public class VoteingUI : NetworkBehaviour
         Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} CONFIRMED vote for {selectedTargetClientId}");
         if (selectedButton != null && selectedButton != confirmedButton)
         {
-            selectedButton.image.color = Color.white;
+            selectedButton.image.sprite = null;
+            selectedButton.image.color = new Color(1f, 1f, 1f, 0f);
         }
         selectedButton = null;
         Button skipButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         if (confirmedButton != null && confirmedButton != skipButton)
         {
-            confirmedButton.image.color = Color.white;
+            confirmedButton.image.sprite = null;
+            confirmedButton.image.color = new Color(1f, 1f, 1f, 0f);
         }
         confirmedButton = skipButton;
-        confirmedButton.image.color = Color.red;
+        confirmedButton.image.sprite = confirmCircle;
+        confirmedButton.image.color = new Color(1f, 1f, 1f, 1f);
         //CastVote();
     }
 
@@ -293,6 +306,57 @@ public class VoteingUI : NetworkBehaviour
         ClearVote();
         ClearButtons();
     }
+    
+    public bool[] CheckWinCondition()
+    {
+        int noAliveImpostors = 0;
+        int noAliveGoodGuys = 0;
+        int noPlayers = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().noPlayers.Value;
+        var role = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().MyRole;
+        bool is_impostor = (role == PlayerRole.Impostor || role == PlayerRole.ImpostorControl) ? true : false;
+        bool[] results = new bool[2]; // [game_ended, has_won]
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var client_role = client.PlayerObject.GetComponent<PlayerNetworkData>().MyRole;
+            var client_alive = client.PlayerObject.GetComponent<PlayerNetworkData>().IsAlive.Value;
+            if ((client_role == PlayerRole.Impostor || client_role == PlayerRole.ImpostorControl) && client_alive)
+                noAliveImpostors += 1;
+            else if ((client_role != PlayerRole.Impostor && client_role != PlayerRole.ImpostorControl) && client_alive)
+                noAliveGoodGuys += 1;
+        }
+        Debug.Log("Alive impostors: "+noAliveImpostors.ToString());
+        Debug.Log("Alive good guys: " + noAliveGoodGuys.ToString());
+        Debug.Log("Is impostor?: " + is_impostor.ToString());
+        Debug.Log("Is alive?: " + NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().IsAlive.Value);
+
+        if(noAliveImpostors == 0)
+        {
+            results[0] = true;
+            if (is_impostor)
+                results[1] = false;
+            else
+                results[1] = true;
+        }
+        else
+        {
+            if(noAliveImpostors >= noAliveGoodGuys)
+            {
+                results[0] = true;
+                if (is_impostor)
+                    results[1] = true;
+                else
+                    results[1] = false;
+            }
+            else
+            {
+                results[0] = false;
+                results[1] = false;
+            }
+        }
+        return results;
+    }
+
 
     //Dojaviti tko je bio izbacen za mjenjanje nekih UI elemenata ili sto ce biti potrebno
     [ClientRpc]
@@ -309,5 +373,7 @@ public class VoteingUI : NetworkBehaviour
             name = data.PlayerName.Value.ToString();
         }
         Debug.Log($"Voted out player is: {name}");
+        voteTexts.SetActive(true);
+        voteTexts.gameObject.GetComponent<TMP_Text>().text = "Voting result: " + name;
     }
 }
