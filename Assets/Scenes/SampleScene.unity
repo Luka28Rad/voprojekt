@@ -3122,6 +3122,7 @@ GameObject:
   - component: {fileID: 901970909}
   - component: {fileID: 901970910}
   - component: {fileID: 901970911}
+  - component: {fileID: 901970912}
   m_Layer: 5
   m_Name: PlayerContainer
   m_TagString: Untagged
@@ -3162,6 +3163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DragDrop
   GameUI: {fileID: 1264376966}
   canvas: {fileID: 869340154}
+  dragAnimation: {fileID: 0}
 --- !u!225 &901970911
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3174,6 +3176,78 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &901970912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 901970908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381e84df44b5fe24a9b841e2f21070c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DragAnimation
+  angryEyebrowsSelect:
+  - {fileID: 7135879743182878662, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -1146543713, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -604402019, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -700278395, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: 1383010494, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -731540827, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -728077190, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -526536427, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: 387254605, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -1278874721, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  - {fileID: -943237542, guid: c27438baeda3f7c4d80ef04c62d21652, type: 3}
+  angryEyesSelect:
+  - {fileID: 8317427776829470140, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: 6972864102444005050, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: 3599306487383078718, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: -7021800989552036103, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: 8600880917963087622, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: -5022698149855190150, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: 346948398911451749, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: 3399317403861590383, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  - {fileID: 6902310101798307796, guid: a0e64b9f01f50fe4db6ef1760ace357e, type: 3}
+  angrySkinSelect1:
+  - {fileID: 2684806634962156635, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: -7426185533081494006, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: -7244288506526833405, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: 4801562971703223330, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: 672662307511384862, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  angrySkinSelect2:
+  - {fileID: -2269911265261596069, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: 2608829089601229429, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: -740282388194940686, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: -4703249666506304428, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  - {fileID: -6034943739638120598, guid: fa91a10cfba61504fb5236288725a6d0, type: 3}
+  angryOutfitSelect1:
+  - {fileID: -6464694299791795490, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 3090934837853963148, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 2616302244170174258, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 7072590190167558734, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 498267628589715780, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -1913132494142015455, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -5518876958832767521, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -1980730947620167142, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 2183239465273929901, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -919859669939093990, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 4247171997381546310, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  angryOutfitSelect2:
+  - {fileID: -8641347040777241539, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 4808273387965257917, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 5237733475550723725, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 4794242037241600538, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 8525788717443677661, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -5027048077816216502, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -6144968792086560322, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 6245920767161792300, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 3000170811121279532, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: 4064305854766094349, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  - {fileID: -9047096917710307280, guid: f7aa5d93ef230e1448bf1d39bc20b0ae, type: 3}
+  playAnimation: 0
+  editPlayerLook: {fileID: 0}
 --- !u!1 &952432051
 GameObject:
   m_ObjectHideFlags: 0
@@ -5574,7 +5648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1412347316
 RectTransform:
   m_ObjectHideFlags: 0
