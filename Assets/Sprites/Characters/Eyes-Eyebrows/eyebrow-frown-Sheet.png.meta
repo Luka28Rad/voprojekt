@@ -116,12 +116,12 @@ TextureImporter:
       name: eyebrow-frown-Sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 440
-        height: 64
+        x: 11
+        y: 40
+        width: 18
+        height: 5
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,11 +134,231 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3719afe88edd7a542900a1cd2320f032
+      internalID: -1146543713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4b07009cee60e04f94e57ffe3418fc2
+      internalID: -604402019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b952658117f4c14d95c9c563ed85519
+      internalID: -700278395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e9d156aedbee9f43a06a27fa948b4d5
+      internalID: 1383010494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86b81ea7300d08e43b27bf76966689d9
+      internalID: -731540827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10bb3dceb8110db42820feb662c36e53
+      internalID: -728077190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d407e564f9740e444a9e4d45707c316f
+      internalID: -526536427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07921e109396e6b4885ae94241f75730
+      internalID: 387254605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af44a82f3cd78bb439b16ac394441d12
+      internalID: -1278874721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: eyebrow-frown-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 40
+        width: 18
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44351ad16250df743b4f7b65f17ad7a0
+      internalID: -943237542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 4e48660e17f765c428cd73fd52fed2b5
     internalID: 0
     vertices: []
     indices: 
@@ -146,9 +366,21 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":40.0,"y":6.0},"gridSpriteOffset":{"x":0.0,"y":18.0},"gridSpritePadding":{"x":0.0,"y":40.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       eyebrow-frown-Sheet_0: 7135879743182878662
+      eyebrow-frown-Sheet_1: -1146543713
+      eyebrow-frown-Sheet_10: -943237542
+      eyebrow-frown-Sheet_2: -604402019
+      eyebrow-frown-Sheet_3: -700278395
+      eyebrow-frown-Sheet_4: 1383010494
+      eyebrow-frown-Sheet_5: -731540827
+      eyebrow-frown-Sheet_6: -728077190
+      eyebrow-frown-Sheet_7: -526536427
+      eyebrow-frown-Sheet_8: 387254605
+      eyebrow-frown-Sheet_9: -1278874721
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

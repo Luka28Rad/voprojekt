@@ -1,0 +1,1092 @@
+fileFormatVersion: 2
+guid: f7aa5d93ef230e1448bf1d39bc20b0ae
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8641347040777241539
+    second: clothes-flapping-Sheet_0
+  - first:
+      213: 4808273387965257917
+    second: clothes-flapping-Sheet_1
+  - first:
+      213: 5237733475550723725
+    second: clothes-flapping-Sheet_2
+  - first:
+      213: 4794242037241600538
+    second: clothes-flapping-Sheet_3
+  - first:
+      213: 8525788717443677661
+    second: clothes-flapping-Sheet_4
+  - first:
+      213: -5027048077816216502
+    second: clothes-flapping-Sheet_5
+  - first:
+      213: -6144968792086560322
+    second: clothes-flapping-Sheet_6
+  - first:
+      213: -4157914184281189145
+    second: clothes-flapping-Sheet_7
+  - first:
+      213: 6245920767161792300
+    second: clothes-flapping-Sheet_8
+  - first:
+      213: 3000170811121279532
+    second: clothes-flapping-Sheet_9
+  - first:
+      213: 4064305854766094349
+    second: clothes-flapping-Sheet_10
+  - first:
+      213: -9047096917710307280
+    second: clothes-flapping-Sheet_11
+  - first:
+      213: -9024359339516814
+    second: clothes-flapping-Sheet_12
+  - first:
+      213: -4966078543434434417
+    second: clothes-flapping-Sheet_13
+  - first:
+      213: 627984163742199648
+    second: clothes-flapping-Sheet_14
+  - first:
+      213: 5502457030469126844
+    second: clothes-flapping-Sheet_15
+  - first:
+      213: -8772084774294053287
+    second: clothes-flapping-Sheet_16
+  - first:
+      213: -2576082083715210990
+    second: clothes-flapping-Sheet_17
+  - first:
+      213: -6464694299791795490
+    second: clothes-flapping-Sheet_18
+  - first:
+      213: 3090934837853963148
+    second: clothes-flapping-Sheet_19
+  - first:
+      213: 1347286819828401639
+    second: clothes-flapping-Sheet_20
+  - first:
+      213: 6974241772442545304
+    second: clothes-flapping-Sheet_21
+  - first:
+      213: 2616302244170174258
+    second: clothes-flapping-Sheet_22
+  - first:
+      213: 7072590190167558734
+    second: clothes-flapping-Sheet_23
+  - first:
+      213: 498267628589715780
+    second: clothes-flapping-Sheet_24
+  - first:
+      213: -7820121221401522535
+    second: clothes-flapping-Sheet_25
+  - first:
+      213: -3575750518315664380
+    second: clothes-flapping-Sheet_26
+  - first:
+      213: -1913132494142015455
+    second: clothes-flapping-Sheet_27
+  - first:
+      213: -7965246578160080273
+    second: clothes-flapping-Sheet_28
+  - first:
+      213: 3495442772210677253
+    second: clothes-flapping-Sheet_29
+  - first:
+      213: -5518876958832767521
+    second: clothes-flapping-Sheet_30
+  - first:
+      213: -1980730947620167142
+    second: clothes-flapping-Sheet_31
+  - first:
+      213: 6065176750840004856
+    second: clothes-flapping-Sheet_32
+  - first:
+      213: 6155796501216232098
+    second: clothes-flapping-Sheet_33
+  - first:
+      213: 2183239465273929901
+    second: clothes-flapping-Sheet_34
+  - first:
+      213: -919859669939093990
+    second: clothes-flapping-Sheet_35
+  - first:
+      213: 4247171997381546310
+    second: clothes-flapping-Sheet_36
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 55
+        width: 40
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3c799576a4c31880800000000000000
+      internalID: -8641347040777241539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 55
+        width: 40
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db812a8cb2b6ab240800000000000000
+      internalID: 4808273387965257917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 55
+        width: 36
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8e7f5668da20b840800000000000000
+      internalID: 5237733475550723725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 55
+        width: 36
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1ad70d5bb1988240800000000000000
+      internalID: 4794242037241600538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 55
+        width: 38
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddd734dbaafa15670800000000000000
+      internalID: 8525788717443677661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 55
+        width: 32
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4444fc58665c3ab0800000000000000
+      internalID: -5027048077816216502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 55
+        width: 38
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb1c1d7e07fa8baa0800000000000000
+      internalID: -6144968792086560322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 65
+        width: 22
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e49c57341f1c46c0800000000000000
+      internalID: -4157914184281189145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 55
+        width: 32
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c27f9ed68d7fda650800000000000000
+      internalID: 6245920767161792300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 55
+        width: 40
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c222166057fb2a920800000000000000
+      internalID: 3000170811121279532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 55
+        width: 36
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d089fdb24a0576830800000000000000
+      internalID: 4064305854766094349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 55
+        width: 36
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03088537941427280800000000000000
+      internalID: -9047096917710307280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 65
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27c1e3b9460ffdff0800000000000000
+      internalID: -9024359339516814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 65
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f88b6eb40e1f41bb0800000000000000
+      internalID: -4966078543434434417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 65
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06fac6c054c07b800800000000000000
+      internalID: 627984163742199648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 65
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cba86f41487ac5c40800000000000000
+      internalID: 5502457030469126844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 65
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95e1790df5b434680800000000000000
+      internalID: -8772084774294053287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 65
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21128e75efaef3cd0800000000000000
+      internalID: -2576082083715210990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 38
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edada6729cac846a0800000000000000
+      internalID: -6464694299791795490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 1
+        width: 36
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c834a2acbd435ea20800000000000000
+      internalID: 3090934837853963148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 1
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e50072793682b210800000000000000
+      internalID: 1347286819828401639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 1
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89ce020e0fb79c060800000000000000
+      internalID: 6974241772442545304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 1
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23f02d08709fe4420800000000000000
+      internalID: 2616302244170174258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 1
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4a89d64e43e62260800000000000000
+      internalID: 7072590190167558734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 1
+        width: 34
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4419a2da4c33ae600800000000000000
+      internalID: 498267628589715780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 1
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99e4ed19e29597390800000000000000
+      internalID: -7820121221401522535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 1
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40c306649d1606ec0800000000000000
+      internalID: -3575750518315664380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 1
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 128786ef1203375e0800000000000000
+      internalID: -1913132494142015455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 1
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6a6f585072c57190800000000000000
+      internalID: -7965246578160080273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 1
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 506f2528eae428030800000000000000
+      internalID: 3495442772210677253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 1
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdd4fad65a20963b0800000000000000
+      internalID: -5518876958832767521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 1
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a122a7f82b70384e0800000000000000
+      internalID: -1980730947620167142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 1
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f0c6c5ce16db2450800000000000000
+      internalID: 6065176750840004856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 1
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a206949d48cd6550800000000000000
+      internalID: 6155796501216232098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 0
+        width: 34
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da03443f9bc6c4e10800000000000000
+      internalID: 2183239465273929901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 0
+        width: 34
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1e721af0800c33f0800000000000000
+      internalID: -919859669939093990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clothes-flapping-Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 1
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 641d9ebdd6cf0fa30800000000000000
+      internalID: 4247171997381546310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: dfc6893983fc52e4f9e9cd14c9316c2c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      clothes-flapping-Sheet_0: -8641347040777241539
+      clothes-flapping-Sheet_1: 4808273387965257917
+      clothes-flapping-Sheet_10: 4064305854766094349
+      clothes-flapping-Sheet_11: -9047096917710307280
+      clothes-flapping-Sheet_12: -9024359339516814
+      clothes-flapping-Sheet_13: -4966078543434434417
+      clothes-flapping-Sheet_14: 627984163742199648
+      clothes-flapping-Sheet_15: 5502457030469126844
+      clothes-flapping-Sheet_16: -8772084774294053287
+      clothes-flapping-Sheet_17: -2576082083715210990
+      clothes-flapping-Sheet_18: -6464694299791795490
+      clothes-flapping-Sheet_19: 3090934837853963148
+      clothes-flapping-Sheet_2: 5237733475550723725
+      clothes-flapping-Sheet_20: 1347286819828401639
+      clothes-flapping-Sheet_21: 6974241772442545304
+      clothes-flapping-Sheet_22: 2616302244170174258
+      clothes-flapping-Sheet_23: 7072590190167558734
+      clothes-flapping-Sheet_24: 498267628589715780
+      clothes-flapping-Sheet_25: -7820121221401522535
+      clothes-flapping-Sheet_26: -3575750518315664380
+      clothes-flapping-Sheet_27: -1913132494142015455
+      clothes-flapping-Sheet_28: -7965246578160080273
+      clothes-flapping-Sheet_29: 3495442772210677253
+      clothes-flapping-Sheet_3: 4794242037241600538
+      clothes-flapping-Sheet_30: -5518876958832767521
+      clothes-flapping-Sheet_31: -1980730947620167142
+      clothes-flapping-Sheet_32: 6065176750840004856
+      clothes-flapping-Sheet_33: 6155796501216232098
+      clothes-flapping-Sheet_34: 2183239465273929901
+      clothes-flapping-Sheet_35: -919859669939093990
+      clothes-flapping-Sheet_36: 4247171997381546310
+      clothes-flapping-Sheet_4: 8525788717443677661
+      clothes-flapping-Sheet_5: -5027048077816216502
+      clothes-flapping-Sheet_6: -6144968792086560322
+      clothes-flapping-Sheet_7: -4157914184281189145
+      clothes-flapping-Sheet_8: 6245920767161792300
+      clothes-flapping-Sheet_9: 3000170811121279532
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

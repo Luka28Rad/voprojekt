@@ -5,6 +5,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 {
     [SerializeField] private GameUI GameUI;
     [SerializeField] private Canvas canvas;
+    [SerializeField] private DragAnimation dragAnimation;
     private RectTransform rt;
     private CanvasGroup canvasGroup;
     
@@ -16,6 +17,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         rt = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
+        dragAnimation = GetComponent<DragAnimation>();
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -27,6 +29,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             originalAnchoredPos = rt.anchoredPosition;
             canvasGroup.alpha = 0.8f;
             Debug.Log("Started drag!");
+            dragAnimation.StartDragAnimation();
         }
     }
 
@@ -52,6 +55,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 rt.anchoredPosition = originalAnchoredPos;
             }
         }
+        dragAnimation.EndDragAnimation();
     }
 
     public void OnPointerDown(PointerEventData eventData)
