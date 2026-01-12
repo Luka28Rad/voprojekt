@@ -15,6 +15,13 @@ public enum PlayerRole
     Fool
 }
 
+public enum WinTeam
+{
+    Town,
+    Impostors,
+    Fool
+}
+
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -47,12 +54,23 @@ public class GameManager : NetworkBehaviour
         // Dicitonary za role
         ServerRoleMap.Clear();
         
-        // prvi je impostor, mozemo napraviti tu da se usporeduje kolko je igraca pa vidit jel ak je 5-7 igraca 1 impostor, 8+ su 2 itd
-        // TODO
+        // prvi je impostor, ak je 6-8 igraca +1 impostor control, 9-10 su +2 impostor control
+        int numOfImpostors = 1;
         ServerRoleMap[playerIds[0]] = PlayerRole.Impostor;
+		if(playerIds.Count > 8)
+        {
+            ServerRoleMap[playerIds[1]] = PlayerRole.ImpostorControl;
+            ServerRoleMap[playerIds[2]] = PlayerRole.ImpostorControl;
+            numOfImpostors = 3;
+        }
+        else if (playerIds.Count > 5)
+        {
+            ServerRoleMap[playerIds[1]] = PlayerRole.ImpostorControl;
+            numOfImpostors = 2;
+        }
 
         // Ostali su villageri i random role sa sansom
-        for (int i = 1; i < playerIds.Count; i++)
+        for (int i = numOfImpostors; i < playerIds.Count; i++)
         {
             float randomChance = Random.Range(0f, 1f);
             if (randomChance < 0.25f)
@@ -62,6 +80,10 @@ public class GameManager : NetworkBehaviour
             else if (randomChance < 0.5f)
             {
                 ServerRoleMap[playerIds[i]] = PlayerRole.Doctor;
+            }
+			else if (randomChance < 0.6f)
+            {
+                ServerRoleMap[playerIds[i]] = PlayerRole.Fool;
             }
             else
             {
@@ -78,6 +100,9 @@ public class GameManager : NetworkBehaviour
             var playerObject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             var playerData = playerObject.GetComponent<PlayerNetworkData>();
             
+            playerData.hasWon.Value = false; 
+            playerData.IsAlive.Value = true;
+            
             // Ovo salje RPC specificnom klijentu
             ClientRpcParams clientRpcParams = new ClientRpcParams
             {
@@ -90,6 +115,101 @@ public class GameManager : NetworkBehaviour
         
     }
     
+    public void ExilePlayer(ulong clientId)
+    {
+        if (!IsServer) return;
+        Debug.Log($"[GameManager] Exiled ({clientId})");
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient client))
+        {
+            var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+            data.IsAlive.Value = false;
+        }
+
+        PlayerRole role = ServerRoleMap.ContainsKey(clientId) ? ServerRoleMap[clientId] : PlayerRole.Unassigned;
+        
+        if (role == PlayerRole.Fool)
+        {
+            Debug.Log($"[GameManager] The Fool ({clientId}) was voted out! Fool wins.");
+            EndGame(WinTeam.Fool, clientId);
+            return;
+        }
+
+        CheckWinCondition();
+    }
+    
+    public void CheckWinCondition()
+    {
+        if (!IsServer) return;
+
+        int impostorsAlive = 0;
+        int townAlive = 0;
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+            if (data.IsAlive.Value)
+            {
+                PlayerRole role = ServerRoleMap.ContainsKey(client.ClientId) ? ServerRoleMap[client.ClientId] : PlayerRole.Unassigned;
+
+                if (role == PlayerRole.Impostor || role == PlayerRole.ImpostorControl)
+                {
+                    impostorsAlive++;
+                }
+                else if (role != PlayerRole.Unassigned)
+                {
+                    townAlive++;
+                }
+            }
+        }
+
+        if (impostorsAlive == 0)
+        {
+            EndGame(WinTeam.Town);
+        }
+        else if (impostorsAlive >= townAlive)
+        {
+            EndGame(WinTeam.Impostors);
+        }
+    }
+    
+    private void EndGame(WinTeam winningTeam, ulong foolWinnerId = ulong.MaxValue)
+    {
+        Debug.Log($"Game Over. Winner: {winningTeam}");
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+            PlayerRole role = ServerRoleMap.ContainsKey(client.ClientId) ? ServerRoleMap[client.ClientId] : PlayerRole.Unassigned;
+            bool isWinner = false;
+
+            switch (winningTeam)
+            {
+                case WinTeam.Town:
+                    if (role != PlayerRole.Impostor && role != PlayerRole.ImpostorControl && role != PlayerRole.Fool)
+                        isWinner = true;
+                    break;
+
+                case WinTeam.Impostors:
+                    if (role == PlayerRole.Impostor || role == PlayerRole.ImpostorControl)
+                        isWinner = true;
+                    break;
+
+                case WinTeam.Fool:
+                    if (client.ClientId == foolWinnerId)
+                        isWinner = true;
+                    break;
+            }
+            data.SetHasWonServerRpc(isWinner);
+        }
+
+        Invoke(nameof(TriggerGameOver), 0.5f);
+    }
+
+    private void TriggerGameOver()
+    {
+        LobbyManager.Instance.UIChangeClientRpc();
+    }
+    
     private void Shuffle<T>(IList<T> list)
     {
         System.Random rng = new System.Random();
@@ -98,9 +218,7 @@ public class GameManager : NetworkBehaviour
         {
             n--;
             int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+            (list[k], list[n]) = (list[n], list[k]);
         }
     }
 }

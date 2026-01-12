@@ -129,6 +129,8 @@ public class ActionResolutionSystem : NetworkBehaviour
         {
             player.NightTargetId.Value = ulong.MaxValue;
         }
+        
+        GameManager.Instance.CheckWinCondition();
     }
     
     [ClientRpc]
@@ -151,38 +153,6 @@ public class ActionResolutionSystem : NetworkBehaviour
             Debug.Log("[Client] Peaceful night.");
         }
     }
-
-    // --- VOTING PHASE / FOOL LOGIC ---
-    /*
-    public void ResolveVoteEjection(ulong ejectedClientId)
-    {
-        if (!IsServer) return;
-
-        PlayerRole role = GetServerSideRole(ejectedClientId);
-
-        var allPlayers = FindObjectsByType<PlayerNetworkData>(FindObjectsSortMode.None);
-        foreach(var p in allPlayers) 
-        {
-            if(p.OwnerClientId == ejectedClientId)
-            {
-                p.IsAlive.Value = false;
-                
-                // --- FOOL WIN ---
-                if (role == PlayerRole.Fool)
-                {
-                    Debug.Log("THE FOOL HAS BEEN VOTED OUT! FOOL WINS!");
-                    MessageAllClientsClientRpc($"<color=yellow>THE FOOL ({p.PlayerName.Value}) WAS VOTED OUT! THEY WIN!</color>");
-                    // TODO game over
-                }
-                else
-                {
-                    MessageAllClientsClientRpc($"<color=red>{p.PlayerName.Value} was ejected.</color>");
-                }
-                break;
-            }
-        }
-    }
-    */
 
     private PlayerRole GetServerSideRole(ulong clientId)
     {

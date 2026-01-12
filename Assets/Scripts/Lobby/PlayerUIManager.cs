@@ -10,6 +10,10 @@ public class PlayerUIManager : MonoBehaviour
     //To be fair ovo vjv nije best way jer se update poziva svaki frame
     private void Update()
     {
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
+        {
+            return;
+        }
         //Za svakog klijenta
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {

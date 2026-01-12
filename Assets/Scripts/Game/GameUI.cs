@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class GameUI : MonoBehaviour
+public class GameUI : NetworkBehaviour 
 {
     private static bool dayTimeTimerActive = false;
     private static bool nightTimeTimerActive = false;
@@ -48,6 +48,13 @@ public class GameUI : MonoBehaviour
         voteButton.onClick.AddListener(ClientVote);
         skipButton.onClick.AddListener(ClientSkipVote);
         exitButton.onClick.AddListener(CloseVotingMenu);
+        
+        if (dayTimeScreen) dayTimeScreen.SetActive(false);
+        if (nightTimeScreen) nightTimeScreen.SetActive(false);
+        if (transitionScreen) transitionScreen.SetActive(false);
+        if (votingScreen) votingScreen.SetActive(false);
+        
+        if (timer) timer.text = ""; 
     }
     private void Update()
     {
@@ -61,14 +68,6 @@ public class GameUI : MonoBehaviour
             float timeLeft = gameTimeManager.NightTime.Value;
             timer.text = Mathf.CeilToInt(timeLeft).ToString();
         }
-    }
-    private void OnEnable()
-    {
-        Debug.Log("IM GETTING CALLED WHEN ACTIVATING");
-        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-        {
-            gameTimeManager.StartDayTimeTimer();
-        } 
     }
     public void EnableDayTimer()
     {
@@ -92,42 +91,35 @@ public class GameUI : MonoBehaviour
     {
         gameTimeManager.StartTransitionTimer(panelIndex);
     }
-    public void UIChange() // make all clients proceed to the correct UI
+    public void UIChange() 
     {
-        Debug.Log("HELLO!");
+        if (!IsServer) return;
+
         if (dayTimeScreen.activeInHierarchy)
         {
             StartCoroutine(ResolveVotesFlow());
         }
         else if (nightTimeScreen.activeInHierarchy)
         {
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer) lobby.ResetLocationClientRpc();
-            bool[] stats = voteUI.CheckWinCondition();
-            // 2 cases: game continues = cycle to day, game ends = cycle to game over screen
-            if (stats[0])
+            lobby.ResetLocationClientRpc();
+            CleanupNightSeats();
+            ToggleTransitionClientRpc(1);
+        }
+    }
+    
+    private void CleanupNightSeats()
+    {
+        for(int i = 1; i < 4; i++)
+        {
+            var cart_seat = nightTimeScreen.transform.GetChild(i);
+            if (cart_seat.childCount == 1)
             {
-                //end the game
-                NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().SetHasWonServerRpc(true);
-                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-                    lobby.UIChangeClientRpc();
-            }
-            else
-            {
-                // continue the game
-                for(int i = 1; i < 4; i++)
-                {
-                    var cart_seat = nightTimeScreen.transform.GetChild(i);
-                    if (cart_seat.childCount == 1)
-                    {
-                        var playerCard = cart_seat.GetChild(0);
-                        var playerCardsContainer = lobby.GetPlayerCardsContainer();
-                        playerCard.SetParent(playerCardsContainer,false);
-                    }
-                }
-                nightTimeScreen.SetActive(false);
-                ToggleTransition(1);
+                var playerCard = cart_seat.GetChild(0);
+                var playerCardsContainer = lobby.GetPlayerCardsContainer();
+                playerCard.SetParent(playerCardsContainer, false);
             }
         }
+        nightTimeScreen.SetActive(false);
     }
 
     public void OpenVotingMenu()
@@ -150,37 +142,41 @@ public class GameUI : MonoBehaviour
     {
 
     }
-
+    
+    public void ServerEndDay()
+    {
+        Debug.Log("Server: Day Ended. Starting Vote Resolution.");
+        StartCoroutine(ResolveVotesFlow());
+    }
 
     private IEnumerator ResolveVotesFlow()
     {
-        Debug.Log("ROLE: " + NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().MyRole);
         voteUI.ResolveVotes();
-
         yield return new WaitForSeconds(gameTimeManager.voteResultTime);
+        CloseVotingScreenClientRpc();
+        ToggleTransitionClientRpc(0);
+    }
+    
+    [ClientRpc]
+    private void ToggleTransitionClientRpc(int panelIndex)
+    {
+        if(nightTimeScreen.activeInHierarchy) nightTimeScreen.SetActive(false);
+        gameTimeManager.StartTransitionTimer(panelIndex);
+    }
+    
+    [ClientRpc]
+    private void CloseVotingScreenClientRpc()
+    {
         voteUI.voteTexts.SetActive(false);
         dayTimeScreen.SetActive(false);
-
         if (votingScreen.activeInHierarchy)
         {
             votingScreen.SetActive(false);
-
             RectTransform rect = timer.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(150f, -100f);
-
             votingMenuButton.interactable = true;
             voteUI.ClearButtons();
         }
-        
-        bool[] stats = voteUI.CheckWinCondition();
-        if (stats[0])
-        {
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<PlayerNetworkData>().SetHasWonServerRpc(true);
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-                lobby.UIChangeClientRpc();
-        }
-        else
-            ToggleTransition(0);
     }
 
 }

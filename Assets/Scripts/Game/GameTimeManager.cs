@@ -92,6 +92,11 @@ public class GameTimeManager : NetworkBehaviour
         }
         ShowcaseTime.Value = 0;
         lobby.UIChangeClientRpc();
+
+        if (IsServer)
+        {
+            StartDayTimeTimer();
+        }
     }
     public void StartDayTimeTimer()
     {
@@ -112,7 +117,10 @@ public class GameTimeManager : NetworkBehaviour
         }
         DayTime.Value = 0;
         DisableDayTimeTimerClientRpc();
-        UIChangeClientRpc();
+        if (IsServer)
+        {
+            GameUI.Instance.ServerEndDay(); 
+        }
     }
     public void StartNightTimeTimer()
     {
@@ -300,12 +308,30 @@ public class GameTimeManager : NetworkBehaviour
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
                 StartNightTimeTimer();
         }
-        var panel = gameUI.transitionScreen.transform.GetChild(panelIndex);
-        panel.gameObject.SetActive(true);
-        var train = panel.GetChild(1).GetComponent<TrainAnimation>();
-        train.PlayAnimation();
-        yield return new WaitForSeconds(transitionDuration-train.duration);
-        panel.gameObject.SetActive(false);
+        if (panelIndex < gameUI.transitionScreen.transform.childCount)
+        {
+            var panel = gameUI.transitionScreen.transform.GetChild(panelIndex);
+            panel.gameObject.SetActive(true);
+
+            float waitTime = transitionDuration;
+
+            if (panel.childCount > 1)
+            {
+                var train = panel.GetChild(1).GetComponent<TrainAnimation>();
+                if (train != null)
+                {
+                    train.PlayAnimation();
+                    waitTime = Mathf.Max(train.duration, transitionDuration);
+                }
+            }
+
+            yield return new WaitForSeconds(waitTime);
+            panel.gameObject.SetActive(false);
+        }
+        else
+        {
+            yield return new WaitForSeconds(transitionDuration);
+        }
         gameUI.transitionScreen.SetActive(false);
         gameUI.timer.gameObject.SetActive(true);
         transitionRoutine = null;

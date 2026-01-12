@@ -111,7 +111,7 @@ public class LobbyManager : NetworkBehaviour
         mainMenuScreen.SetActive(true);
         waitingRoomScreen.SetActive(false);
         lobbyScreen.SetActive(false);
-        gameScreen.SetActive(false);
+        //gameScreen.SetActive(false);
 
         playerCardsContainer = PlayerUI.GetContainer();
     }
@@ -133,7 +133,6 @@ public class LobbyManager : NetworkBehaviour
             waitingRoomScreen.SetActive(false);
             playerCardsContainer.gameObject.SetActive(true); //Make player cards appear
             lobbyScreen.SetActive(true);
-            playerModel.GetComponent<EditPlayerLook>().networkData.noPlayers.Value = NetworkManager.Singleton.ConnectedClientsList.Count();
         }
         else if (lobbyScreen.activeInHierarchy)
         {
@@ -330,6 +329,14 @@ public class LobbyManager : NetworkBehaviour
         // IsHost je svojstvo iz NetworkBehaviour-a koje je istinito samo na računalu koje je pokrenulo igru kao host.
         // Osiguravamo da samo host može započeti igru, što je standardna praksa za autoritativni model.
         if (!IsHost) return;
+        
+        int count = NetworkManager.Singleton.ConnectedClientsList.Count;
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+            data.noPlayers.Value = count;
+        }
+        
         GameManager.Instance.StartGameAndAssignRoles();
         UIChangeClientRpc();
         Timer.StartShowcaseTimer();
@@ -526,6 +533,20 @@ public class LobbyManager : NetworkBehaviour
     }
     private void StartLobby() //starts the lobby room (no players can join after that point)
     {
+        if (IsServer)
+        {
+            int count = NetworkManager.Singleton.ConnectedClientsList.Count;
+            
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                var data = client.PlayerObject.GetComponent<PlayerNetworkData>();
+                if (data != null)
+                {
+                    data.noPlayers.Value = count;
+                }
+            }
+        }
+
         UIChangeClientRpc();
     }
     private void ExitToMainMenu() //pressing the X returns you back to the main menu
