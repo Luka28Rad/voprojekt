@@ -128,6 +128,7 @@ public class ActionResolutionSystem : NetworkBehaviour
         foreach (var player in allPlayers)
         {
             player.NightTargetId.Value = ulong.MaxValue;
+            player.TrainCart.Value = 0; 
         }
         
         GameManager.Instance.CheckWinCondition(true);

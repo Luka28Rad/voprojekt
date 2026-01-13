@@ -229,7 +229,7 @@ public class GameTimeManager : NetworkBehaviour
                 dead_player.SetParent(lobby.GetPlayerCardsContainer(),false);
             }
             newspaperScreen.gameObject.SetActive(false);
-
+            gameUI.nightTimeScreen.SetActive(false);
 
             EditPlayerLook[] allVisualCards = FindObjectsByType<EditPlayerLook>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             Transform mainContainer = lobby.GetPlayerCardsContainer();
