@@ -66,7 +66,7 @@ public class PlayerInteractionButton : MonoBehaviour
             if (localData.MyRole == PlayerRole.Impostor) buttonText.text = "KILL";
             else if (localData.MyRole == PlayerRole.ImpostorControl) buttonText.text = "BLOCK";
             else if (localData.MyRole == PlayerRole.Doctor) buttonText.text = "PROTECT";
-            else if (localData.MyRole == PlayerRole.Investigator) buttonText.text = "INVESTIGATE";
+            else if (localData.MyRole == PlayerRole.Detective) buttonText.text = "INVESTIGATE";
             else buttonText.text = "INTERACT";
         }
     }

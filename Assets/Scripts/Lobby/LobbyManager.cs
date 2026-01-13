@@ -5,10 +5,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
-using UnityEditor.ShaderGraph;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 // Nasljeđuje NetworkBehaviour, što je osnova za sve skripte koje trebaju mrežnu funkcionalnost u Netcode for GameObjects (NGO).
 // To nam daje pristup svojstvima poput IsHost, IsServer, IsClient i mrežnim metodama.
@@ -86,10 +83,11 @@ public class LobbyManager : NetworkBehaviour
             desc.Add(PlayerRole.Unassigned, "???");
             desc.Add(PlayerRole.Villager, "You're an average 9-5 worker trying to do his best in life. Help find killers and vote them out.");
             desc.Add(PlayerRole.Doctor, "Help yourself or others by shielding them for one night from any attackers. You can't shield the same person twice in a row.");
-            desc.Add(PlayerRole.Investigator, "You have a new case, Sherlock. You have to interrogate people to find out on which side they are on.");
+            desc.Add(PlayerRole.Detective, "You have a new case, Sherlock. You have to interrogate people to find out on which side they are on.");
             desc.Add(PlayerRole.Impostor, "Its time to hunt! Kill all humans to get your sweet victory.");
             desc.Add(PlayerRole.ImpostorControl, "Its time to hunt! Control your fellows to make them kill others!");
             desc.Add(PlayerRole.Fool, "Huzzah! You are the king's entertainer! Get voted out to win and have the last laugh be yours.");
+            //playerCardPrefab.transform.localScale = Vector3.one * 2;
         }
     }
 
@@ -183,7 +181,7 @@ public class LobbyManager : NetworkBehaviour
             cardRT.anchorMax = Vector2.one;
             cardRT.anchoredPosition = Vector2.zero;
             cardRT.sizeDelta = Vector2.zero;
-            cardRT.localScale = Vector3.one;
+            cardRT.localScale = Vector3.one * 2;
             playerCardsContainer.gameObject.SetActive(true);
             gameScreen.SetActive(true);
         }
@@ -287,7 +285,7 @@ public class LobbyManager : NetworkBehaviour
             logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[1];
         else if (roleName == PlayerRole.Doctor)
             logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[2];
-        else if (roleName == PlayerRole.Investigator)
+        else if (roleName == PlayerRole.Detective)
             logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[3];
         else if (roleName == PlayerRole.ImpostorControl)
             logo.GetComponent<UnityEngine.UI.Image>().sprite = role_emblems[4];

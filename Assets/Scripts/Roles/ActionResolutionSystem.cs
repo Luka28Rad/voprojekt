@@ -99,7 +99,7 @@ public class ActionResolutionSystem : NetworkBehaviour
             PlayerRole role = GetServerSideRole(player.OwnerClientId);
             ulong targetId = player.NightTargetId.Value;
 
-            if (role == PlayerRole.Investigator && targetId != ulong.MaxValue && playerMap.ContainsKey(targetId))
+            if (role == PlayerRole.Detective && targetId != ulong.MaxValue && playerMap.ContainsKey(targetId))
             {
                 PlayerRole targetRole = GetServerSideRole(playerMap[targetId].OwnerClientId);
                 
@@ -130,7 +130,7 @@ public class ActionResolutionSystem : NetworkBehaviour
             player.NightTargetId.Value = ulong.MaxValue;
         }
         
-        GameManager.Instance.CheckWinCondition();
+        GameManager.Instance.CheckWinCondition(true);
     }
     
     [ClientRpc]

@@ -5113,6 +5113,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   ShowTopMostFoldoutHeaderGroup: 1
+  IsGameOver:
+    m_InternalValue: 0
 --- !u!4 &1284772152
 Transform:
   m_ObjectHideFlags: 0
@@ -5650,11 +5652,11 @@ MonoBehaviour:
   GameOverTime:
     m_InternalValue: 0
   voteResultTime: 5
-  roleShowcaseDuration: 2
-  dayTimeDuration: 15
+  roleShowcaseDuration: 3
+  dayTimeDuration: 45
   nightTimeDuration: 20
   gameOverTimeDuration: 15
-  transitionDuration: 10
+  transitionDuration: 5
   newspaperDuration: 10
 --- !u!4 &1408394188
 Transform:

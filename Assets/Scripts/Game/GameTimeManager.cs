@@ -1,12 +1,7 @@
-using NUnit.Framework.Constraints;
 using System.Collections;
 using System.Linq;
-using System.Threading;
 using TMPro;
-using Unity.Burst.Intrinsics;
 using Unity.Netcode;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -71,6 +66,11 @@ public class GameTimeManager : NetworkBehaviour
     private void DisableNightTimeTimerClientRpc()
     {
         GameUI.Instance.DisableNightTimer();
+    }
+    [ClientRpc]
+    public void StartTransitionClientRpc(int panelIndex)
+    {
+        StartTransitionTimer(panelIndex);
     }
     #endregion
 
@@ -148,7 +148,7 @@ public class GameTimeManager : NetworkBehaviour
         }
         
         DisableNightTimeTimerClientRpc();
-        UIChangeClientRpc();
+        StartTransitionClientRpc(1);
     }
     public void StartWaitingRoomTimer() //uses gameover timer
     {
@@ -237,11 +237,19 @@ public class GameTimeManager : NetworkBehaviour
             {
                 if (!(card.linkedClientId == NetworkManager.Singleton.LocalClientId))
                     card.transform.SetParent(mainContainer, false);
-                    card.transform.localScale = Vector3.one;
+                    card.transform.localScale = Vector3.one * 2;
             }
-            gameUI.dayTimeScreen.SetActive(true);
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-                StartDayTimeTimer();
+            if (GameManager.Instance.IsGameOver.Value)
+            {
+                Debug.Log("Newspaper finished. Game is over. Switching to Game Over screen.");
+                lobby.UIChangeClientRpc();
+            }
+            else
+            {
+                gameUI.dayTimeScreen.SetActive(true);
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                    StartDayTimeTimer();
+            }
         }
         else if(panelIndex == 0) // Ovo je night time
         {
@@ -283,26 +291,19 @@ public class GameTimeManager : NetworkBehaviour
                     bool isSameCart = cardOwnerData.TrainCart.Value == myCart;
                     bool isAlive = cardOwnerData.IsAlive.Value;
 
-                    // If it is NOT me, IS in my cart, and IS alive -> Put in seat
                     if (!isMe && isSameCart && isAlive && currentSlotIndex < 3)
                     {
                         card.transform.SetParent(seatSlots[currentSlotIndex], false);
                         card.transform.localPosition = Vector3.zero;
-                        card.transform.localScale = new Vector3(3f,3f,1f); // Ensure scale is correct
+                        card.transform.localScale = new Vector3(3f,3f,1f);
                         card.enabled = true;
-                        // Enable interaction button on this card (if you have one)
-                        // card.EnableInteractionButton(true); 
 
                         currentSlotIndex++;
                     }
                     else if (!isMe)
                     {
-                        // Hide players not in my cart / dead players / or if slots are full
-                        // Move them to the generic lobby container so they aren't visible
                         card.transform.SetParent(hiddenContainer, false);
                     }
-                    // If isMe == true, we usually don't show our own card on screen, 
-                    // or we leave it in the default container.
                 }
             }
 
@@ -363,7 +364,7 @@ public class GameTimeManager : NetworkBehaviour
 
                     card.transform.SetParent(deadParent, false);
                     card.transform.localPosition = Vector3.zero;
-                    card.transform.localScale = Vector3.one;
+                    card.transform.localScale = Vector3.one * 2;
                     card.transform.SetAsLastSibling();
 
                     return;

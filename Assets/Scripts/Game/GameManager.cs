@@ -8,7 +8,7 @@ public enum PlayerRole
 {
     Unassigned,
     Villager,
-    Investigator,
+    Detective,
     Doctor,
     Impostor,
     ImpostorControl,
@@ -26,6 +26,8 @@ public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
     public Dictionary<ulong, PlayerRole> ServerRoleMap = new Dictionary<ulong, PlayerRole>();
+    
+    public NetworkVariable<bool> IsGameOver = new NetworkVariable<bool>(false);
 
     private void Awake()
     {
@@ -44,6 +46,8 @@ public class GameManager : NetworkBehaviour
     {
         // provjera da je host
         if (!IsHost) return;
+        
+        IsGameOver.Value = false;
         
         // Ids svih igraca
         List<ulong> playerIds = NetworkManager.Singleton.ConnectedClients.Keys.ToList();
@@ -75,7 +79,7 @@ public class GameManager : NetworkBehaviour
             float randomChance = Random.Range(0f, 1f);
             if (randomChance < 0.25f)
             {
-                ServerRoleMap[playerIds[i]] = PlayerRole.Investigator;
+                ServerRoleMap[playerIds[i]] = PlayerRole.Detective;
             }
             else if (randomChance < 0.5f)
             {
@@ -130,14 +134,14 @@ public class GameManager : NetworkBehaviour
         if (role == PlayerRole.Fool)
         {
             Debug.Log($"[GameManager] The Fool ({clientId}) was voted out! Fool wins.");
-            EndGame(WinTeam.Fool, clientId);
+            EndGame(WinTeam.Fool, clientId, waitForNewspaper: false);
             return;
         }
 
-        CheckWinCondition();
+        CheckWinCondition(waitForNewspaper: false);
     }
     
-    public void CheckWinCondition()
+    public void CheckWinCondition(bool waitForNewspaper = false)
     {
         if (!IsServer) return;
 
@@ -161,20 +165,21 @@ public class GameManager : NetworkBehaviour
                 }
             }
         }
-
+        Debug.Log($"[GameManager] There are {impostorsAlive} impostors and {townAlive} people");
         if (impostorsAlive == 0)
         {
-            EndGame(WinTeam.Town);
+            EndGame(WinTeam.Town, ulong.MaxValue, waitForNewspaper);
         }
         else if (impostorsAlive >= townAlive)
         {
-            EndGame(WinTeam.Impostors);
+            EndGame(WinTeam.Impostors, ulong.MaxValue, waitForNewspaper);
         }
     }
     
-    private void EndGame(WinTeam winningTeam, ulong foolWinnerId = ulong.MaxValue)
+    private void EndGame(WinTeam winningTeam, ulong foolWinnerId, bool waitForNewspaper)
     {
-        Debug.Log($"Game Over. Winner: {winningTeam}");
+        Debug.Log($"[GameManager] Game Over. Winner: {winningTeam}");
+        IsGameOver.Value = true;
 
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -199,10 +204,18 @@ public class GameManager : NetworkBehaviour
                         isWinner = true;
                     break;
             }
-            data.SetHasWonServerRpc(isWinner);
+            
+            data.hasWon.Value = isWinner;
         }
 
-        Invoke(nameof(TriggerGameOver), 0.5f);
+        if (!waitForNewspaper)
+        {
+            Invoke(nameof(TriggerGameOver), 0.5f);
+        }
+        else
+        {
+            Debug.Log("[GameManager] Game is over, but waiting for Newspaper transition to finish before showing Game Over screen.");
+        }
     }
 
     private void TriggerGameOver()
