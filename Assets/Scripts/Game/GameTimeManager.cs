@@ -237,6 +237,7 @@ public class GameTimeManager : NetworkBehaviour
             {
                 if (!(card.linkedClientId == NetworkManager.Singleton.LocalClientId))
                     card.transform.SetParent(mainContainer, false);
+                    card.transform.localScale = Vector3.one;
             }
             gameUI.dayTimeScreen.SetActive(true);
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
@@ -287,7 +288,7 @@ public class GameTimeManager : NetworkBehaviour
                     {
                         card.transform.SetParent(seatSlots[currentSlotIndex], false);
                         card.transform.localPosition = Vector3.zero;
-                        card.transform.localScale = Vector3.one; // Ensure scale is correct
+                        card.transform.localScale = new Vector3(3f,3f,1f); // Ensure scale is correct
                         card.enabled = true;
                         // Enable interaction button on this card (if you have one)
                         // card.EnableInteractionButton(true); 
